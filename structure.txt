@@ -1,0 +1,53 @@
+notes on the file structure of the server
+
+users
+    documents
+        users/account/documents/
+    files
+        users/account/files/
+    notes
+        users/account/xi/
+    options
+        users/account/options
+    commands
+        users/account/commands.txt
+
+
+code snippets
+
+    snippets/
+
+
+global documents
+
+    documents/
+
+
+global useful files
+
+    files/
+
+
+data needed for programs to work
+    default commands
+        data/commands.txt
+    default options
+        data/options
+    my ip
+        data/ip.txt
+
+
+routes
+
+    routes/
+        root.js
+        post.js
+        snippets.js  // why
+        ip.js?
+        any.js
+
+code  // recategorize?
+    server.js
+    functions.js
+    make.js
+    process.js
