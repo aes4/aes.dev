@@ -1,0 +1,68 @@
+;globalvars
+    let cl = '';
+    let cltoggle = false;
+    let lastmode;
+;listener
+    window.addEventListener('keydown', clkd);
+    function clkd(event) {
+        if (cltoggle) {
+            switch (event.key) {
+                case 'Enter':
+                    let c = cl.slice(1);
+                    fetch("post", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 'c': c, 'r': reload })
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        let base = document.getElementById("base");
+                        let source = document.getElementById("source");
+                        let pls = document.createRange().createContextualFragment(data);
+                        document.body.appendChild(pls);
+                        document.body.removeChild(base);
+                        window.removeEventListener('keydown', clkd);
+                        window.removeEventListener('keydown', tekd);
+                        document.body.removeChild(source);
+                    });
+                    cl = '';
+                    cltoggle = false;
+                    g.mode = lastmode;
+                    break
+                case 'Escape':
+                    cl = '';
+                    cltoggle = false;
+                    g.mode = lastmode;
+                    break
+                case 'Tab':
+                    event.preventDefault();  // is this needed?
+                    break
+                case 'Backspace':
+                    cl = cl.slice(0, -1);
+                    break
+                case 'Shift':
+                    break
+                case 'CapsLock':
+                    break
+                case 'Control':
+                    break
+                case 'Meta':
+                    break
+                case 'Alt':
+                    break
+                default:
+                    cl += event.key
+            }
+        } else if (event.key == ';') {
+            cl += ';';
+            cltoggle = true;
+            lastmode = g.mode;
+            g.mode = 'cl';
+        }
+    }
+;mainfunctions
+    function main() {
+        t(cl, 20, canvas.height - 16, "bottom");
+    }
+;frame
+    main();

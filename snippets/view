@@ -1,0 +1,14 @@
+;globalvars
+    c.font = '<%- fontsize %> <%- fontname %>';
+    const charascent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxAscent;
+    const chardescent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxDescent;
+    const charvrange = charascent + chardescent;
+;mainfunctions
+    function main() {
+        let content = <%- content %>;
+        for (let i = 0; i < content.length; i++) {
+            t(content[i], <%- textborder %> + <%- textborderx %>, (i * (charvrange + <%- linespacing %>)) + (<%- textborder%> + <%- textbordery %>));
+        };
+    }
+;frame
+        main();

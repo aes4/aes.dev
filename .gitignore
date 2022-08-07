@@ -1,0 +1,17 @@
+*
+!*/
+
+!.gitignore
+!README.md
+!server.js
+!structure.txt
+!functions.js
+!make.js
+!process.js
+
+!users/
+!snippets/**
+!documents/
+!files/
+!data/
+!routes/**

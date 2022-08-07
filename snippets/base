@@ -1,0 +1,44 @@
+<canvas id="base" style="postition: fixed; top; 0px; left: 0px;"></canvas>
+<script id="source" type="module">
+    const convas = document.getElementById("base");
+    const c = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let reload = '<%- reload %>';
+
+;globalvars
+
+    function t(text, x, y, linedraw="top") {
+        c.font = '<%- fontsize %> <%- fontname %>';
+        c.fillStyle = '<%- textcolor %>';
+        c.textBaseline = linedraw;
+        c.fillText(text, x, y);
+    }
+
+    function bg() {
+        c.fillStyle = '<%- bacgroundcolor %>';
+        c.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+
+;function
+
+    window.addEventListener('resize', r);
+    function r() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+;listener
+
+;mainfunctions
+
+    function frame() {
+        c.beginPath();
+        bg();
+;frame
+        requestAnimationFrame(frame);
+    }
+
+;run
+    frame();
+</script>
