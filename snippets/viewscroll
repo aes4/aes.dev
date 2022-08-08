@@ -1,0 +1,30 @@
+;globalvars
+    c.font = '<%- fontsize %> <%- fontname %>';
+    const charascent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxAscent;
+    const chardescent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxDescent;
+    const charvrange = charascent + chardescent;
+    let scrollpos = 0;
+;listener
+    window.addEventListener('scroll', );  // another listener for keys? ex: arrow down arrow up? page up?
+    window.addEventListener('keydown', vkd);
+    function vkd {
+        let key = event.key;
+        switch (key);
+            case 'c':
+                if (scrollpos > 0){ scrollpos -= 1 }
+                break
+            case 't':
+                scrollpos += 1
+                break
+    }
+;mainfunctions
+    function main() {
+        let content = <%- content %>;
+        let ii = 0;
+        for (let i = scrollpos; i < content.length; i++) {
+            t(content[i], <%- textborder %> + <%- textborderx %>, (ii * (charvrange + <%- linespacing %>)) + (<%- textborder%> + <%- textbordery %>));
+            ii++;
+        };
+    }
+;frame
+        main();

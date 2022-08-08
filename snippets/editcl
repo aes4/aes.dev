@@ -35,7 +35,8 @@
                     g.mode = lastmode;
                     break
                 case 'Tab':
-                    event.preventDefault();  // is this needed?
+                    event.preventDefault();
+                    // add ability to tab in cl?
                     break
                 case 'Backspace':
                     cl = cl.slice(0, -1);

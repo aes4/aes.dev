@@ -9,9 +9,9 @@
 !make.js
 !process.js
 
-!users/
+!users/.gitkeep
 !snippets/**
-!documents/
-!files/
-!data/
+!documents/.gitkeep
+!files/.gitkeep
+!data/.gitkeep
 !routes/**

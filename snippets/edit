@@ -148,6 +148,65 @@
             }
         }
     }
+    function modeless(key) {
+        switch (key) {
+            case 'Tab':
+                event.preventDefault();
+                break
+        }
+    }
+    function visualmodes(key) {
+        switch (key) {
+            case 'Control':
+                break
+            case 'Escape':
+                g.splacements = [];
+                g.mode = 'normal';
+                break
+            case 'o':
+                let temp = { x: g.spoint.x, y: g.spoint.y };
+                g.spoint = { x: g.placement.x, y: g.placement.y };
+                g.placement = { x: temp.x, y: temp.y };
+                break
+            case 'h':  // move left
+                if (g.placement.x > 1) { g.placement.x -= 1; }
+                break
+            case 'c':  // move up
+                if (g.placement.y > 1) { g.placement.y -= 1; }
+                resetx();
+                break
+            case 't':  // move down
+                if (g.placement.y < g.content.length) { g.placement.y += 1; }
+                resetx();
+                break
+            case 'n':  // move left
+                if (g.placement.x < g.eol()) { g.placement.x += 1; }
+                break
+            case 'H':  // move left
+                if (prev(('dCapsLock'))) {
+                    g.buffer = [];
+                    g.cl().splice(0, g.placement.x - 1);
+                }
+                if (g.placement.x > 1) { g.placement.x = 1; }
+                resetx();
+                break
+            case 'C':  // move up
+                if (g.placement.y > 1) { g.placement.y = 1; }
+                resetx();
+                break
+            case 'T':  // move down
+                if (g.placement.y < g.content.length) { g.placement.y = g.content.length; }
+                resetx();
+                break
+            case 'N':  // move left
+                if (prev('dCapsLock')) {
+                    g.buffer = [];
+                    g.cl().splice(g.placement.x, g.cll());
+                } else {
+                    if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
+                break
+        }
+    }
     async function normal(key) {
         g.buffer += key;
         switch (key) {
@@ -158,9 +217,11 @@
                 break
             case 'V':
                 g.spoint = { x: g.placement.x, y: g.placement.y };
-                // for (let i = 1; i <= g.eol();
+                for (let i = 1; i <= g.eol(); i++) {
+                    g.splacements.push({ x: i, y: g.placement.y });
+                }
                 g.mode = 'visualine';
-                // I think I forgot a break here but I'll look back at this later
+                break
             case 'a':
                 g.mode = 'insert';
                 if (g.placement.x < g.eol()) { g.placement.x += 1; }
@@ -222,7 +283,7 @@
                     if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
                 }
                 break
-            case ',':  // moev back a word to the start of a word
+            case ',':  // move back a word to the start of a word
                 arr = wsf();
                 for (let i = 0; i < arr.length; i++) {
                     for (let u = 0; u < arr[i].x.length; u++) {
@@ -341,9 +402,6 @@
                     g.placement.x -= 1;
                 }
                 break
-            case 'Tab':
-                event.preventDefault();
-                break
         }
     };
     function insert(key) {
@@ -363,7 +421,6 @@
             case 'CapsLock':
                 break
             case 'Control':
-                g.mode = 'normal';  // most likely will be moved to escape
                 break
             case 'Backspace':
                 if (g.placement.x > 1) {
@@ -379,14 +436,13 @@
                 }
                 break
             case 'Escape':
-                g.mode = 'normal';  // delete this line from control later
+                g.mode = 'normal';
                 break
             case 'Meta':
                 break
             case 'Alt':
                 break
             case 'Tab':
-                event.preventDefault();
                 for (let i = 0; i < 4; i++) {
                     g.cl().splice(g.placement.x - 1, 0, " ");
                     g.placement.x += 1;
@@ -405,24 +461,23 @@
     async function visual(key) {
         splace();
         switch(key) {
-            case 'Control':  // temp
-                g.splacements = [];
-                g.mode = 'normal';
-                break
-            case 'Escape':
-                g.splacements = [];
-                g.mode = 'normal';
-                break
             case 'v':
                 g.splacements = [];
                 g.mode = 'normal';
+                break
+            case 'V':
+                g.spoint = { x: g.placement.x, y: g.placement.y };
+                for (let i = 1; i <= g.eol(); i++) {
+                    g.splacements.push({ x: i, y: g.placement.y });
+                }
+                g.mode = 'visualine';
                 break
             case 'a':
                 delsel();
                 g.mode = 'insert';
                 if (g.placement.x < g.eol()) { g.placement.x += 1; }
                 break
-            case 'i':
+            case 'i':  // this would work in visualmodes?
                 delsel();
                 g.mode = 'insert';
                 break
@@ -475,43 +530,6 @@
                     }
                 }
                 g.mode = 'normal';
-                break
-            case 'h':  // move left
-                if (g.placement.x > 1) { g.placement.x -= 1; }
-                break
-            case 'c':  // move up
-                if (g.placement.y > 1) { g.placement.y -= 1; }
-                resetx();
-                break
-            case 't':  // move down
-                if (g.placement.y < g.content.length) { g.placement.y += 1; }
-                resetx();
-                break
-            case 'n':  // move left
-                if (g.placement.x < g.eol()) { g.placement.x += 1; }
-                break
-            case 'H':  // move left
-                if (prev(('dCapsLock'))) {
-                    g.buffer = [];
-                    g.cl().splice(0, g.placement.x - 1);
-                }
-                if (g.placement.x > 1) { g.placement.x = 1; }
-                resetx();
-                break
-            case 'C':  // move up
-                if (g.placement.y > 1) { g.placement.y = 1; }
-                resetx();
-                break
-            case 'T':  // move down
-                if (g.placement.y < g.content.length) { g.placement.y = g.content.length; }
-                resetx();
-                break
-            case 'N':  // move left
-                if (prev('dCapsLock')) {
-                    g.buffer = [];
-                    g.cl().splice(g.placement.x, g.cll());
-                } else {
-                    if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
                 break
             case 'd':
                 delsel();
@@ -582,13 +600,12 @@
         }
         splace();
     };
-    /*
     function visualine(key) {
         switch(key) {
-            // do stuff
+            case ':(':
+                break
         }
     }
-    */
     /*
     function visualblock(key) {
         switch(key) {
@@ -622,7 +639,6 @@
             case 'Alt':
                 break
             case 'Tab':
-                event.preventDefault();
                 if (g.placement.x < g.eol()) {
                     g.cl().splice(g.placement.x - 1, 1);
                     for (let i = 0; i < 4; i++) {
@@ -651,11 +667,20 @@
     }
 ;listener
     window.addEventListener('keydown', tekd);
-    async function tekd(event) {
+    async function tekd(event) {  // doesn't this function need to check if cltoggle = false?
         let key = event.key;
+        /*
+        if (Number.isFinite(Number(key))) { g.count += key } else {
+            if (Number(g.count) > 1) {
+                for (let i = 0; i < Number(g.count); i++) { modeless(key); }
+                g.count = '';
+            } else { modeless(key); }
+        }
+        */
+        modeless(key);
         switch (g.mode) {
             case 'normal':
-                if (Nmuber.isFinite(Number(key))) { g.count += key } else {
+                if (Number.isFinite(Number(key))) { g.count += key } else {
                     if (Number(g.count) > 1) {
                         for (let i = 0; i < Number(g.count); i++) { await normal(key); }
                         g.count = '';
@@ -668,11 +693,38 @@
             case 'visual':
                 if (Number.isFinite(Number(key))) { g.count += key } else {
                     if (Number(g.count) > 1) {
-                        for (let i = 0; i < Number(g.count); i++) { visual(key); }
+                        for (let i = 0; i < Number(g.count); i++) {
+                            visualmodes(key);
+                            visual(key);
+                        }
                         g.count = '';
-                    } else { await visual(key); }
+                    } else { visualmodes; await visual(key); }
                 }
                 break
+            case 'visualine':
+                if (Number.isFinite(Number(key))) { g.count += key } else {
+                    if (Number(g.count) > 1) {
+                        for (let i = 0; i < Number(g.count); i++) {
+                            visualmodes(key);
+                            visualine(key);
+                        }
+                        g.count = '';
+                    } else { visualmodes; await visualine(key); }
+                }
+                break
+            /*
+            case 'visualblock':
+                if (Number.isFinite(Number(key))) { g.count += key } else {
+                    if (Number(g.count) > 1) {
+                        for (let i = 0; i < Number(g.count); i++) {
+                            visualmodes(key);
+                            visualblock(key);
+                        }
+                        g.count = '';
+                    } else { visualmodes; await visualblock(key); }
+                }
+                break
+            */
             /*
             case 'splice':
                 if (Number.isFinite(Number(key))) { g.count += key } else {
@@ -739,7 +791,7 @@
                                 line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
                                 line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
                             }
-                        } else {  // sname as ii == g.content[i].length
+                        } else {  // same as ii == g.content[i].length
                             if (g.placement.x - 1 == ii && g.placement.y - 1 == i) {
                                 let x = (ii * charspacing) + (textborder + textborderx);
                                 let y = (i * (charvrange + linespacing)) + (textborder + textbordery);
