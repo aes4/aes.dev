@@ -93,7 +93,7 @@
         }
         return arr;
     }
-    function splace() {  // g.splacements
+    function splace() {  // g.splacements change function name because visualine will use something diff?
         g.splacements = [];
         if (g.placement.y < g.spoint.y) {
             for (let ix = g.placement.x; ix <= g.content[g.placement.y - 1].length; ix++) {

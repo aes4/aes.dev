@@ -5,7 +5,7 @@ module.exports = {
         let optionsdata = await readFile(optionspath);
         let options = JSON.parse(optionsdata);
         let content_ = await readFile(contentpath, 'utf8');
-        content = content_.split(`/n`);
+        content = content_.split(`\n`);
         content.pop();
         content = JSON.stringify(content);
         let data = options;

@@ -6,13 +6,13 @@ ejs = require("ejs");
 m = require("../make.js");
 
 // directory paths
-const du = '/home/ubuntu/aes/users/';
-const ds = '/home/ubuntu/aes/snippets/';
-const dup = '/home/ubuntu/aes/upload/';
-const dd = '/home/ubuntu/aes/documents/';
-const df = '/home/ubuntu/aes/files/';
-const da = '/home/ubuntu/aes/data/';
-const dr = '/home/ubuntu/aes/routes/';
+const du = '/home/ubuntu/aes.dev/users/';
+const ds = '/home/ubuntu/aes.dev/snippets/';
+const dup = '/home/ubuntu/aes.dev/upload/';
+const dd = '/home/ubuntu/aes.dev/documents/';
+const df = '/home/ubuntu/aes.dev/files/';
+const da = '/home/ubuntu/aes.dev/data/';
+const dr = '/home/ubuntu/aes.dev/routes/';
 
 module.exports = function(server) {
     server.get('/', async function (req, res) {

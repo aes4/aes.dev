@@ -1,6 +1,6 @@
 const {readFile, writeFile} = require('fs').promises;
 
-const du = '/home/ubuntu/aes/users/';
+const du = '/home/ubuntu/aes.dev/users/';
 
 function cb(input) {  // check bool
     switch (input.toLowerCase()) {
