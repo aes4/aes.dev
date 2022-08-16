@@ -16,7 +16,7 @@
     }
 
     function bg() {
-        c.fillStyle = '<%- bacgroundcolor %>';
+        c.fillStyle = '<%- backgroundcolor %>';
         c.fillRect(0, 0, window.innerWidth, window.innerHeight);
     }
 
