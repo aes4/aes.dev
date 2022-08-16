@@ -17,7 +17,7 @@
                     .then(data => {
                         let base = document.getElementById("base");
                         let source = document.getElementById("source");
-                        let pls = document.creatRange().createContextualFragment(data);
+                        let pls = document.createRange().createContextualFragment(data);
                         document.body.appendChild(pls);
                         document.body.removeChild(base);
                         window.removeEventListener('keydown', clkd);
