@@ -1,6 +1,6 @@
 <canvas id="base" style="postition: fixed; top; 0px; left: 0px;"></canvas>
 <script id="source" type="module">
-    const convas = document.getElementById("base");
+    const canvas = document.getElementById("base");
     const c = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;

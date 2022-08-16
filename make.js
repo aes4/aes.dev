@@ -66,7 +66,7 @@ function insert(base, data) {
                         default:
                             for (let l = ii + 1; l < data.length; l++) {
                                 if (data[l].length > 0) {
-                                    if (data[l].length == ';') {
+                                    if (data[l][0] == ';') {
                                         break
                                     }
                                 }
