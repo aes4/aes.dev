@@ -1,4 +1,4 @@
-<canvas id="base" style="postition: fixed; top; 0px; left: 0px;"></canvas>
+<canvas id="base" style="postition: fixed; top: 0px; left: 0px;"></canvas>
 <script id="source" type="module">
     const canvas = document.getElementById("base");
     const c = canvas.getContext("2d");
