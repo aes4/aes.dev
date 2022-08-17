@@ -25,7 +25,7 @@
     const charascent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxAscent;
     const chardescent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxDescent;
     const charvrange = charascent + chardescent;
-    const sybols = [" ", "~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "{", "}", "[", "]", "|", "\\", ";", ":", '"', "'", "<", ">", ",", ".", "?", "/"];
+    const symbols = [" ", "~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "{", "}", "[", "]", "|", "\\", ";", ":", '"', "'", "<", ">", ",", ".", "?", "/"];
     let arr = [];  // :(
 ;function
     function line(x, y, xx, yy, color="<%- cursorcolor %>") {
