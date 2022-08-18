@@ -23,7 +23,7 @@ module.exports = function(server) {
         let ip = await readFile(da + 'ip.txt', 'utf8');
         for (i = 0; i < filenames.length; i++) {
             if (req.params.any == filenames[i]) {  // st
-                res.send(df + req.params.any);
+                res.sendFile(df + req.params.any);
                 notsent = false;
             }
         }
