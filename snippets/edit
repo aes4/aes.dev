@@ -803,7 +803,7 @@
                             }
                             if (g.content[i][ii - 1] == " ") {
                                 let x = ((ii - 1) * charspacing) + (textborder + textborderx);
-                                let y = (i * (charvrange + linespacing)) + (textborder + teuxtbordery);
+                                let y = (i * (charvrange + linespacing)) + (textborder + textbordery);
                                 line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
                                 line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
                             }
