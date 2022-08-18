@@ -19,8 +19,7 @@ module.exports = function(server) {
         let data;
         let ip = await readFile(da + 'ip.txt', 'utf8');
         if (req.ip == ip) {
-            data = await preparedata(du + 'Aes/options', dd + 'home', 'view home');
-            pack = ejs.render(await m('view'), data);
+            pack = await preparepack('view', du + 'Aes/options', dd + 'home', 'view home');
             res.send(pack);
         } else {
             data = await preparedata(da + 'options', dd + 'home', 'view home');

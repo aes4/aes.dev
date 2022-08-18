@@ -1,6 +1,23 @@
+var ejs;
 const {readFile, writeFile } = require('fs').promises;
 
+ejs = require("ejs");
+m = require("./make.js");
+
 module.exports = {
+    preparepack: async function preparepack(makearr, optionspath, contentpath, reload) {
+        let optionsdata = await readFile(optionspath);
+        let options = JSON.parse(optionsdata);
+        let content_ = await readFile(contentpath, 'utf8');
+        content = content_.split(`\n`);
+        content.pop();
+        content = JSON.stringify(content);
+        let data = options;
+        data.content = content;
+        data.reload = reload;
+        pack = ejs.render(await m(makearr, options), data);
+        return pack;
+    },
     preparedata: async function preparedata(optionspath, contentpath, reload) {  // might need a better function than this
         let optionsdata = await readFile(optionspath);
         let options = JSON.parse(optionsdata);

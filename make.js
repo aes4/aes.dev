@@ -82,12 +82,12 @@ function insert(base, data) {
     return base;
 }
 
-module.exports = async function m(cstr) {
+module.exports = async function m(makearr, options) {
     let base = await rs('snippets/base');
     let mods;  // modifications
     let id = 0;  // id number
     // let cstr = cstr_.split(" ");
-    switch (cstr) {  // if multiple docs this might have to be if edit if view if etc insert etc
+    switch (makearr) {  // if multiple docs this might have to be if edit if view if etc insert etc
         case 'edit':
             let edit = await rs('snippets/edit');
             let editcl = await rs('snippets/editcl');
@@ -103,17 +103,31 @@ module.exports = async function m(cstr) {
             return data;
             break
         case 'view':
-            let view = await rs('snippets/view');
-            let cl = await rs('snippets/cl');  // move?
-            mods = genid(view, id);
-            view = mods[0];
-            id = mods[1];
-            mods = genid(cl, id);
-            cl = mods[0];
-            id = mods[1];
-            data_ = [].concat(view, cl);
-            base = insert(base, data_);
-            data = clean(base);
+            if (options.scroll) {
+                let view = await rs('snippets/viewscroll');
+                let cl = await rs('snippets/cl');  // move?
+                mods = genid(view, id);
+                view = mods[0];
+                id = mods[1];
+                mods = genid(cl, id);
+                cl = mods[0];
+                id = mods[1];
+                data_ = [].concat(view, cl);
+                base = insert(base, data_);
+                data = clean(base);
+            } else {
+                let view = await rs('snippets/view');
+                let cl = await rs('snippets/cl');  // move?
+                mods = genid(view, id);
+                view = mods[0];
+                id = mods[1];
+                mods = genid(cl, id);
+                cl = mods[0];
+                id = mods[1];
+                data_ = [].concat(view, cl);
+                base = insert(base, data_);
+                data = clean(base);
+            }
             return data;
             break
     }
