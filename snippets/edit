@@ -18,7 +18,7 @@
     const textborder = <%- textborder %>;
     const textborderx = <%- textborderx %>;
     const textbordery = <%- textbordery %>;
-    const char spacing = <%- charspacing %>;
+    const charspacing = <%- charspacing %>;
     const linespacing = <%- linespacing %>;
     const cursorlength = <%- cursorlength %>;
     c.font = '<%- fontsize %> <%- fontname %>';
