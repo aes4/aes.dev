@@ -42,7 +42,8 @@ routes
     routes/
         root.js
         post.js
-        snippets.js  // why
+        git.js
+        snippets.js  // construct through url?
         ip.js?
         any.js
 

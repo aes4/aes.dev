@@ -12,6 +12,7 @@ server.set('views', __dirname);
 
 require(__dirname + '/routes/root.js')(server);
 require(__dirname + '/routes/post.js')(server);
+require(__dirname + '/routes/git.js')(server);
 
 server.get('/favicon.ico', function (req, res) { res.sendFile(__dirname + '/files/favicon.ico'); });  // temp
 
