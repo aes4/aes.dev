@@ -8,4 +8,11 @@ module.exports = function(server) {
     });
 }
 
-function callback(err, stdout, stderr) { return true }
+function callback(err, stdout, stderr) {
+    if (stdout) {
+        console.log(stdout);
+    }
+    if (stderr) {
+        console.log(stderr);
+    }
+}

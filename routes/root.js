@@ -1,6 +1,6 @@
 var ejs;
 const {readFile, writeFile} = require('fs').promises;
-const {preparedata} = require("../functions.js");
+const {preparepack, preparedata} = require("../functions.js");
 
 ejs = require("ejs");
 m = require("../make.js");
