@@ -16,3 +16,5 @@
 !files/.gitkeep
 !data/.gitkeep
 !routes/**
+
+node_modules/*
