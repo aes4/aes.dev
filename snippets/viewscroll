@@ -5,17 +5,18 @@
     const charvrange = charascent + chardescent;
     let scrollpos = 0;
 ;listener
-    window.addEventListener('scroll', );  // another listener for keys? ex: arrow down arrow up? page up?
+    //window.addEventListener('scroll', );  // another listener for keys? ex: arrow down arrow up? page up?
     window.addEventListener('keydown', vkd);
-    function vkd {
+    function vkd() {
         let key = event.key;
-        switch (key);
+        switch (key) {
             case 'c':
-                if (scrollpos > 0){ scrollpos -= 1 }
+                if (scrollpos > 0){ scrollpos -= 1; }
                 break
             case 't':
-                scrollpos += 1
+                scrollpos += 1;
                 break
+        }
     }
 ;mainfunctions
     function main() {
