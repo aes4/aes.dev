@@ -9,13 +9,15 @@
     window.addEventListener('keydown', vkd);
     function vkd() {
         let key = event.key;
-        switch (key) {
-            case 'c':
-                if (scrollpos > 0){ scrollpos -= 1; }
-                break
-            case 't':
-                scrollpos += 1;
-                break
+        if (!cltoggle) {
+            switch (key) {
+                case 'c':
+                    if (scrollpos > 0){ scrollpos -= 1; }
+                    break
+                case 't':
+                    scrollpos += 1;
+                    break
+            }
         }
     }
 ;mainfunctions

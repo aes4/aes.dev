@@ -59,6 +59,7 @@
             cltoggle = true;
             lastmode = g.mode;
             g.mode = 'cl';
+            g.buffer = [];
         }
     }
 ;mainfunctions

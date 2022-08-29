@@ -10,7 +10,7 @@
         loc: '<%- loc %>',  // location to save
         cl: function () {return this.content[this.placement.y - 1]},  // current line
         cll: function () {return this.cl().length},  // current line length
-        lc: function () {return this.placement.x  == this.cll()},  // checks if place.x == last character
+        lc: function () {return this.placement.x == this.cll()},  // checks if place.x == last character
         eol: function () {return this.cll() + 1},  // end of line length
         nl: function () {return this.content[this.placement.y]},  // next line
         nll: function () {return this.nl().length},  // next line length
@@ -97,15 +97,15 @@
         g.splacements = [];
         if (g.placement.y < g.spoint.y) {
             for (let ix = g.placement.x; ix <= g.content[g.placement.y - 1].length; ix++) {
-                g.splacements.push({ x: ix, y: g.placemnet.y });
+                g.splacements.push({ x: ix, y: g.placement.y });
             }
             for (let iy = g.placement.y + 1; iy < g.spoint.y; iy++) {
                 for (let ix = 1; ix <= g.content[iy - 1].length; ix++) {
-                    g.splacements.push({ x: ix, y: iy});
+                    g.splacements.push({ x: ix, y: iy });
                 }
             }
             for (let ix = 1; ix <= g.spoint.x; ix++) {
-                g.splacements.push({ x: ix, y: g.spoint.y});
+                g.splacements.push({ x: ix, y: g.spoint.y });
             }
         } else if (g.spoint.y < g.placement.y) {
             for (let ix = g.spoint.x; ix <= g.content[g.spoint.y - 1].length; ix++) {
@@ -130,7 +130,7 @@
                     g.splacements.push({ x: ix, y: g.placement.y });
                 }
             }
-            if ( g.placement.x == g.spoint.x) {
+            if (g.placement.x == g.spoint.x) {
                 g.splacements.push({ x: g.placement.x, y: g.placement.y });
             }
         }
@@ -284,11 +284,13 @@
                     if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
                 }
                 break
+            // note for next 4 cases can be improved with checks but is useable
             case ',':  // move back a word to the start of a word
                 arr = wsf();
                 for (let i = 0; i < arr.length; i++) {
                     for (let u = 0; u < arr[i].x.length; u++) {
                         if (g.placement.x == arr[i].x[u]) {
+                            // maybe a check here if we are at last word to go to start of last word
                             if (arr[i].ws) {
                                 if (i - 2 >= 0) {
                                     g.placement.x = arr[i - 2].x[0];
@@ -308,7 +310,7 @@
                     for (let u = arr[i].x.length - 1; u >= 0; u--) {
                         if (g.placement.x == arr[i].x[u]) {
                             if (arr[i].ws) {
-                                if (i -2 >= 0) {
+                                if (i - 2 >= 0) {
                                     g.placement.x = arr[i - 2].x[arr[i - 2].x.length - 1];
                                 }
                             } else {
@@ -320,14 +322,14 @@
                     }
                 }
                 break
-            case 'm':  // move forward a word to the start of a word kinda
+            case 'm':  // move forward a word to the start of a word
                 arr = wsf();
-                for (let i = 0; i < arr.length; i++) {
+                for (let i = arr.length - 1; i >= 0; i--) {
                     for (let u = arr[i].x.length - 1; u >= 0; u--) {
                         if (g.placement.x == arr[i].x[u]) {
                             if (arr[i].ws) {
-                                if (i - 2 >= 0 ) {
-                                    g.placement.x = arr[i - 2].x[arr[i - 2].x.length - 1];
+                                if (i + 2 < arr.length) {
+                                    g.placement.x = arr[i + 2].x[0];
                                 }
                             } else {
                                 if (i + 1 < arr.length) {
@@ -389,11 +391,11 @@
                 if (Number(g.count) > 0 && Number(g.count) <= g.content.length) { g.placement.y = Number(g.count) } else {
                     if (Number(g.count) > g.content.length) { g.placement.y = g.content.length }
                 }
-                g.content = '';
+                g.count = '';
                 break
             case '>':
                 for (let i = 0; i < 4; i++) {  // insert 4 spaces at start
-                    g.cl().splice(0, 1);
+                    g.cl().splice(0, 0, " ");
                     g.placement.x += 1;
                 }
                 break
@@ -491,7 +493,7 @@
                 let str = '';
                 let currenty = g.splacements[0].y - 1;
                 for (let i = 0; i < g.splacements.length; i++) {
-                    if (g.splacemnets[i].y - 1 != currenty) {
+                    if (g.splacements[i].y - 1 != currenty) {
                         str += "\n";
                         currenty = g.splacements[i].y - 1;
                     }
@@ -699,7 +701,7 @@
                             visual(key);
                         }
                         g.count = '';
-                    } else { visualmodes; await visual(key); }
+                    } else { visualmodes(key); await visual(key); }
                 }
                 break
             case 'visualine':
@@ -710,7 +712,7 @@
                             visualine(key);
                         }
                         g.count = '';
-                    } else { visualmodes; await visualine(key); }
+                    } else { visualmodes(key); await visualine(key); }
                 }
                 break
             /*
@@ -722,7 +724,7 @@
                             visualblock(key);
                         }
                         g.count = '';
-                    } else { visualmodes; await visualblock(key); }
+                    } else { visualmodes(key); await visualblock(key); }
                 }
                 break
             */
@@ -749,7 +751,7 @@
                 for (let i = 0; i < g.content.length; i++) {
                     for (let ii = 0; ii < g.content[i].length; ii++) {
                         t(g.content[i][ii],
-                        (ii * charspacing) + (textborder + textborderx ),
+                        (ii * charspacing) + (textborder + textborderx),
                         (i * (charvrange + linespacing)) + (textborder + textbordery));
                     }
                 }
@@ -765,7 +767,7 @@
                                 line(x + charspacing, y, x + charspacing - cursorlength, y);
                                 line(x + charspacing, y, x + charspacing, y + cursorlength);
                                 line(x, y + charvrange, x + cursorlength, y + charvrange);
-                                line(x, y + charvrange, x, y + cursorlength, y + charvrange);
+                                line(x, y + charvrange, x, y + charvrange - cursorlength);
                                 line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
                                 line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
                             }
@@ -788,7 +790,7 @@
                                 line(x + charspacing, y, x + charspacing - cursorlength, y);
                                 line(x + charspacing, y, x + charspacing, y + cursorlength);
                                 line(x, y + charvrange, x + cursorlength, y + charvrange);
-                                line(x, y + charvrange, x, y + charvrange, y - cursorlength);
+                                line(x, y + charvrange, x, y + charvrange - cursorlength);
                                 line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
                                 line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
                             }
@@ -798,7 +800,7 @@
                                 let y = (i * (charvrange + linespacing)) + (textborder + textbordery);
                                 line(x + cursorlength, y, x, y + cursorlength);
                                 line(x + charspacing - cursorlength, y, x + charspacing, y + cursorlength);
-                                line(x + cursorlength, y + charvrange, x, y + charvrange - cursorlength)
+                                line(x + cursorlength, y + charvrange, x, y + charvrange - cursorlength);
                                 line(x + charspacing - cursorlength, y + charvrange, x + charspacing, y + charvrange - cursorlength);
                             }
                             if (g.content[i][ii - 1] == " ") {

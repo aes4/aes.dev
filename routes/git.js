@@ -2,8 +2,8 @@ var exec = require('child_process').exec;
 
 module.exports = function(server) {
     server.post('/git', function (req, res) {
-        exec('git pull', callback);
-        exec('. .restart.sh', callback);
+        exec('git -C ~/aes.dev pull', callback);
+        exec('. ~/aes.dev/.restart.sh', callback);
         process.exit();
     });
 }
