@@ -136,6 +136,10 @@
         }
     }
     function delsel() {  // delete selected note: really broken
+        for (let s = g.splacements.length - 1; s >= 0; s--) {
+            g.content[g.splacements[s].y - 1].splice(g.splacements[s].x - 1, 1);
+        }
+        /*
         for (let s = 0; s < g.splacements.length; s++) {
             g.content[g.splacements[s].y - 1].splice(g.splacements[s].x - 1, 1, "zero");
         }
@@ -147,6 +151,7 @@
                 }
             }
         }
+        */
     }
     function modeless(key) {
         switch (key) {
@@ -484,12 +489,7 @@
                 delsel();
                 g.mode = 'insert';
                 break
-            case 'o':
-                let temp = { x: g.spoint.x, y: g.spoint.y };
-                g.spoint = { x: g.placement.x, y: g.placement.y };
-                g.placement = { x: temp.x, y: temp.y };
-                break
-            case 'y':
+            case 'y':  // temp to make work press 'o'
                 let str = '';
                 let currenty = g.splacements[0].y - 1;
                 for (let i = 0; i < g.splacements.length; i++) {
@@ -511,11 +511,13 @@
                 navigator.clipboard.writeText(str);
                 break
             case 'p':  // delete and paste at cursor
+                // broken normal mode paste works for now
                 delsel();
                 let c = await navigator.clipboard.readText();
                 let multiline = c.includes("\n");
                 c = strtoarr(c);
                 if (multiline) {  // might be single line or multiline aswell
+                    console.log(c);
                     // insert first line into cl at xpos
                     // change x pos to increase ot width of inserted text tot split
                     g.content.splice(g.placement.y - 1, 0, g.cl().splice(0, g.placement.x - 1));  // reusing split arr
