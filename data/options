@@ -1,0 +1,22 @@
+{
+    "backgroundcolor": "black",
+    "textcolor": "white",
+    "cursorcolor": "grey",
+    "cursorlength": 2,
+    "fontname": "Courier New",
+    "fontsize": "14px",
+    "linespacing": 10,
+    "charspacing": 10,
+    "border": 0,
+    "borderx": 0,
+    "bordery": 0,
+    "borderxx": 500,
+    "borderyy": 800,
+    "textborder": 30,
+    "textborderx": 0,
+    "textbordery": 0,
+    "linenumbers": false,
+    "linenumberalign": "right",
+    "linenumberx": 12,
+    "reissue": false
+}

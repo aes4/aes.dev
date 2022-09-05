@@ -5,6 +5,12 @@
     const charvrange = charascent + chardescent;
     let scrollpos = 0;
 ;listener
+    window.addEventListener('resize', r);
+    function r() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
     //window.addEventListener('scroll', );  // another listener for keys? ex: arrow down arrow up? page up?
     window.addEventListener('keydown', vkd);
     function vkd() {

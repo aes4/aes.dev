@@ -1,0 +1,10 @@
+new,>
+addbind,ab
+removebind,rb
+listbinds,lb
+get,g
+edit,e
+editnote,en
+view,v
+viewnote,vn
+option,o

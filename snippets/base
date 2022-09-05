@@ -22,12 +22,6 @@
 
 ;function
 
-    window.addEventListener('resize', r);
-    function r() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
 ;listener
 
 ;mainfunctions

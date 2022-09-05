@@ -14,7 +14,8 @@
 !snippets/**
 !documents/.gitkeep
 !files/.gitkeep
-!data/.gitkeep
+!data/options
+!data/commands.txt
 !routes/**
 
 node_modules/*

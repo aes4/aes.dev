@@ -3,6 +3,12 @@
     const charascent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxAscent;
     const chardescent = c.measureText('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789').actualBoundingBoxDescent;
     const charvrange = charascent + chardescent;
+;listener
+    window.addEventListener('resize', r);
+    function r() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
 ;mainfunctions
     function main() {
         let content = <%- content %>;
