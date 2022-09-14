@@ -82,26 +82,49 @@ function insert(base, data) {
     return base;
 }
 
-//module.exports = async function m(makearr, options) {
-module.exports = async function m(makearr) {
+//module.exports = async function m(makearr) {
+module.exports = async function m(makearr, options) {  // data is passed instead of options
     let base = await rs('snippets/base');
     let mods;  // modifications
     let id = 0;  // id number
     // let cstr = cstr_.split(" ");
+    /*
+    for (let i in options) {
+        console.log(i);
+        if (i[0] == ';') {
+            console.log(options[i]);
+        }
+    }
+    */
     switch (makearr) {  // if multiple docs this might have to be if edit if view if etc insert etc
         case 'edit':
-            let edit = await rs('snippets/edit');
-            let editcl = await rs('snippets/editcl');
-            mods = genid(edit, id);
-            edit = mods[0];
-            id = mods[1];
-            mods = genid(editcl, id);
-            editcl = mods[0];
-            id = mods[1];
-            data_ = [].concat(edit, editcl);
-            base = insert(base, data_);
-            data = clean(base);
-            return data;
+            if (options.makelinenumbers == true) {
+                let edit = await rs('snippets/editln');
+                let editcl = await rs('snippets/editcl');
+                mods = genid(edit, id);
+                edit = mods[0];
+                id = mods[1];
+                mods = genid(editcl, id);
+                editcl = mods[0];
+                id = mods[1];
+                data_ = [].concat(edit, editcl);
+                base = insert(base, data_);
+                data = clean(base);
+                return data;
+            } else {
+                let edit = await rs('snippets/edit');
+                let editcl = await rs('snippets/editcl');
+                mods = genid(edit, id);
+                edit = mods[0];
+                id = mods[1];
+                mods = genid(editcl, id);
+                editcl = mods[0];
+                id = mods[1];
+                data_ = [].concat(edit, editcl);
+                base = insert(base, data_);
+                data = clean(base);
+                return data;
+            }
             break
         case 'view':
             //if (options.scroll) {

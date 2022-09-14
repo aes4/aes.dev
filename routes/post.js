@@ -44,7 +44,7 @@ module.exports = function(server) {
                                         data.filename = cmd[i];
                                         data.loc = 'docs'
                                     }
-                                    pack = ejs.render(await m(sreload[0]), data);
+                                    pack = ejs.render(await m(sreload[0], data), data);
                                     res.send(pack);
                                     break
                                 case 'view':
@@ -52,20 +52,20 @@ module.exports = function(server) {
                                     for (u = 0; u < documentnames.length; u++) {
                                         if (cmd[1] == documentnames[u]) { // str
                                             data = await preparedata(du + 'Aes/options', dd + cmd[1], 'view ' + cmd[1]);
-                                            pack = ejs.render(await m('view'), data);
+                                            pack = ejs.render(await m('view', data), data);
                                             res.send(pack);
                                             docfound = true;
                                         }
                                     }
                                     if (cmd[1] == 'options' && !docfound) {
                                         data = await preparedata(du + 'Aes/options', du + 'Aes/options', 'view ' + cmd[1]);
-                                        pack = ejs.render(await m('view'), data);
+                                        pack = ejs.render(await m('view', data), data);
                                         res.send(pack);
                                         docfound = true;
                                     }
                                     if (!docfound) {
                                         data = await preparedata(du + 'Aes/options', dd + 'docnotfound', 'view docnotfound');
-                                        pack = ejs.render(await m('view'), data);
+                                        pack = ejs.render(await m('view', data), data);
                                         res.send(pack);
                                     }
                                     break
@@ -76,7 +76,7 @@ module.exports = function(server) {
                                             data = await preparedata(du + 'Aes/options', dd + cmd[1], 'edit ' + cmd[1]);
                                             data.filename = cmd[1];
                                             data.loc = 'docs'  // not sure
-                                            pack = ejs.render(await m('edit'), data);
+                                            pack = ejs.render(await m('edit', data), data);
                                             res.send(pack);
                                             notsent = false;
                                             docfound = true;
@@ -84,19 +84,19 @@ module.exports = function(server) {
                                     }
                                     if (!docfound) {
                                         data = await preparedata(du + 'Aes/options', dd + 'docnotfound', 'view docnotfound');
-                                        pack = ejs.render(await m('view'), data);
+                                        pack = ejs.render(await m('view', data), data);
                                         res.send(pack);
                                     }
                                     break
                                 default:
                                     data = await preparedata(du + 'Aes/options', dd + 'commandnotimplemented', 'viewcommandnotimplemented');
-                                    pack = ejs.render(await m('view'), data);
+                                    pack = ejs.render(await m('view', data), data);
                                     res.send(pack);
                             }
                         } else if (i == cmds.length - 1 && ii == cmds[i].length - 1) {
                             if (!cmdfound) {
                                 data = await preparedata(du + 'Aes/options', dd + 'commandnotfound', 'view commandnotfound');
-                                pack = ejs.render(await m('view'), data);
+                                pack = ejs.render(await m('view', data), data);
                                 res.send(pack);
                             }
                         }
@@ -104,7 +104,7 @@ module.exports = function(server) {
                 }
             } else {
                 data = await preparedata(du + 'Aes/options', dd + 'noargs', 'view noargs');
-                pack = ejs.render(await m('view'), data);
+                pack = ejs.render(await m('view', data), data);
                 res.send(pack);
             }
         } else {

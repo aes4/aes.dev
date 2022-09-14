@@ -21,11 +21,11 @@ module.exports = function(server) {
         if (req.ip == ip) {
             //pack = await preparepack('view', du + 'Aes/options', dd + 'home', 'view home');
             data = await preparedata(du + 'Aes/options', dd + 'home', 'view home');
-            pack = ejs.render(await m('view'), data);
+            pack = ejs.render(await m('view', data), data);
             res.send(pack);
         } else {
             data = await preparedata(da + 'options', dd + 'home', 'view home');
-            pack = ejs.render(await m('view'), data);
+            pack = ejs.render(await m('view', data), data);
             res.send(pack);
         }
     });

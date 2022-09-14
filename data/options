@@ -15,8 +15,13 @@
     "textborder": 30,
     "textborderx": 0,
     "textbordery": 0,
-    "linenumbers": false,
-    "linenumberalign": "right",
-    "linenumberx": 12,
+    "makelinenumbers": false,
+    "linenumberslocation": "left",
+    "linenumbersalign": "right",
+    "linenumbersx": 12,
+    "makerelativenumbers": false,
+    "relativelocation": "left",
+    "relativealign": "right",
+    "relativex": 12,
     "reissue": false
 }

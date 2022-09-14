@@ -33,11 +33,11 @@ module.exports = function(server) {
                 if (req.params.any == documentnames[i]) { // str
                     if (req.ip == ip) {
                         data = await preparedata(du + 'Aes/options', dd + req.params.any, 'view ' + req.params.any);
-                        pack = ejs.render(await m('view'), data);
+                        pack = ejs.render(await m('view', data), data);
                         res.send(pack);
                     } else {
                         data = await preparedata(da + 'options', dd + req.params.any, 'view ' + req.params.any);
-                        pack = ejs.render(await m('view'), data);
+                        pack = ejs.render(await m('view', data), data);
                         res.send(pack);
                     }
                     notsent = false;
@@ -46,7 +46,7 @@ module.exports = function(server) {
             if (req.params.any == "options" && notsent) {
                 if (req.ip == ip) {
                     data = await preparedata(du + 'Aes/options', du + 'Aes/options', 'view ' + req.params.any);
-                    pack = ejs.render(await m('view'), data);
+                    pack = ejs.render(await m('view', data), data);
                     res.send(pack);
                 } else {
                     //data = await preparedata(da + 'options', dd + req.params.any, 'view ' + req.params.any);
@@ -59,11 +59,11 @@ module.exports = function(server) {
         if (notsent) {
             if (req.ip == ip) {
                 data = await preparedata(du + 'Aes/options', dd + 'notfound', 'view notfound');
-                pack = ejs.render(await m('view'), data);
+                pack = ejs.render(await m('view', data), data);
                 res.send(pack);
             } else {
                 data = await preparedata(da + 'options', dd + 'notfound', 'view notfound');
-                pack = ejs.render(await m('view'), data);
+                pack = ejs.render(await m('view', data), data);
                 res.send(pack);
             }
         }
