@@ -7,7 +7,7 @@
         placement: {x: 1, y: 1},
         spoint: {},  // selected pivot point
         filename: '<%- filename %>',
-        loc: '<%- loc %>',  // location to save
+        type: '<%- type %>',  // location to save
         cl: function () {return this.content[this.placement.y - 1]},  // current line
         cll: function () {return this.cl().length},  // current line length
         lc: function () {return this.placement.x == this.cll()},  // checks if place.x == last character
@@ -44,6 +44,7 @@
         if (str.includes("\n")) {  // alwas has newline?
             arr = str.split("\n");
             if (arr[arr.length - 1] == '') { arr.pop(); }
+            if (arr.length == 1) { return [arr[0].split("")] };
         } else { arr[0] = str.split("") };
         if (arr.length > 1) {  // multi line
             for (let i = 0; i < arr.length; i++) {  // [['t', 'e', ...], [...]];
@@ -134,6 +135,7 @@
                 g.nl().push(" ");
             } else { break; }
         }
+        r();
     }
     function resetx() {
         if (g.eol() < g.placement.x) { g.placement.x = g.eol(); }
@@ -322,6 +324,7 @@
                 for (let i = 0; i < c.length; i++) {
                     g.content.splice(g.placement.y, 0, c[i]);
                 }
+                r();
                 break
             case 'h':  // move left
                 if (g.placement.x > 1) { g.placement.x -= 1; }
@@ -454,6 +457,7 @@
                         g.content = [[]];
                         g.placement.x = 1
                     }
+                    r();
                 }
                 break
             case 'x':  // delete character
@@ -494,6 +498,7 @@
                     g.placement.x = 1;
                 }
                 g.placement.y += 1;
+                r();
                 break
             case 'Shift':
                 break
@@ -614,6 +619,7 @@
                     }
                 }
                 g.mode = 'normal';
+                r();
                 break
             case 'd':
                 delsel();
@@ -631,6 +637,7 @@
                         g.placement.x = 1;
                     }
                 }
+                r();
                 break
             case 'x':  // delete character
                 delsel();
@@ -854,12 +861,14 @@
                 }
                 if (slack >= g.placement.y) {
                     for (let i = 0; i < lines; i++) {
-                        vd(i, p);
-                        vsd(i + 1, p + 1);
-                        p++;
+                        if (i < g.content.length) {
+                            vd(i, p);
+                            vsd(i + 1, p + 1);
+                            p++;
+                        }
                     }
                 }
-                if (g.placement.y >= g.content.length - slack) {
+                if (g.placement.y >= g.content.length - slack && !(slack >= g.placement.y)) {
                     for (let i = g.content.length - lines; i <= g.content.length; i++) {
                         if (i < g.content.length) {
                             vd(i, p);
@@ -874,18 +883,20 @@
                 if (slack < g.placement.y && g.placement.y < g.content.length - slack) {
                     for (let i = g.placement.y - slack; i < (g.placement.y + lines) - slack; i++) {
                         if (i < g.content.length) {
-                            dd(i - 1, p);
+                            dd(i - 1, p); // check if i can = -1
                         }
                         p++;
                     }
                 }
                 if (slack >= g.placement.y) {
                     for (let i = 0; i < lines; i++) {
-                        dd(i, p);
-                        p++;
+                        if (i < g.content.length) {
+                            dd(i, p);
+                            p++;
+                        }
                     }
                 }
-                if (g.placement.y >= g.content.length - slack) {
+                if (g.placement.y >= g.content.length - slack && !(slack >= g.placement.y)) {
                     for (let i = g.content.length - lines; i <= g.content.length; i++) {
                         if (i < g.content.length) {
                             dd(i, p);
@@ -908,10 +919,8 @@
 ;run
     g.content = ll(<%- content %>);
     let lines = 0;
-    for (let i = 0; i < g.content.length; i++) {
-        if (((i * (charvrange + linespacing)) + (textborder + textbordery)) < canvas.height) {
-            lines += 1;
-        }
+    for (let i = 0; ((i * (charvrange + linespacing)) + (textborder + textbordery)) < canvas.height; i++) {
+        lines += 1;
     }
     let slack = Math.round(lines / 2);
     console.log('slack:', slack, 'viewable lines:', lines, 'line amount:', g.content.length);

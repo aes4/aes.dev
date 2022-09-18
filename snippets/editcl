@@ -2,6 +2,16 @@
     let cl = '';
     let cltoggle = false;
     let lastmode;
+;function
+    function arrtostr(arr) {
+        let str = '';
+        //for (let i = 0; i < arr.length - 1; i++) {
+        for (let i = 0; i < arr.length; i++) {
+            str += arr[i].join('') + '\n';
+        }
+        //str += arr[arr.length - 1].join('');
+        return str;
+    }
 ;listener
     window.addEventListener('keydown', clkd);
     function clkd(event) {
@@ -9,10 +19,27 @@
             switch (event.key) {
                 case 'Enter':
                     let c = cl.slice(1);
+                    // check if new file?
+                    if (c[0] == 's') {
+                        let temp = c.split(' ');
+                        if (temp.length > 1) {
+                            g.filename = temp[1];
+                            if (temp.length > 2) {
+                                g.type = temp[2];
+                            }
+                        } else {
+                            c += ' default';
+                        }
+                    }
                     fetch("post", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 'c': c, 'r': reload })
+                        body: JSON.stringify({ 'c': c,
+                            'r': reload,
+                            'f': g.filename,
+                            't': g.type,
+                            'g': arrtostr(g.content)
+                        })
                     })
                     .then(res => res.text())
                     .then(data => {

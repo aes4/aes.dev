@@ -35,7 +35,9 @@ module.exports = {
     specarr: function specarr(str) { // why doesn't this split \\n
         // wont check in str includes \n because every file has a \n i think
         arr = str.split(`\n`);
-        arr.pop();
+        if (arr[arr.length - 1] == "") {
+            arr.pop();
+        }
         // eventually do something in case there is a grave in the str
         return arr;
     },

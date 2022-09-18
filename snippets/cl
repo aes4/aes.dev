@@ -11,7 +11,11 @@
                     fetch("post", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 'c': c, 'r': reload })
+                        body: JSON.stringify({ 'c': c,
+                            'r': reload,
+                            'f': g.filename,
+                            't': g.type
+                        })
                     })
                     .then(res => res.text())
                     .then(data => {

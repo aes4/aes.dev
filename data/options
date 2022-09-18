@@ -23,5 +23,6 @@
     "relativelocation": "left",
     "relativealign": "right",
     "relativex": 12,
-    "reissue": false
+    "reissue": false,
+    "defaultype": "file"
 }
