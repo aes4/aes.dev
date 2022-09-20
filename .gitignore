@@ -14,6 +14,8 @@
 !snippets/**
 !documents/.gitkeep
 !files/.gitkeep
+!xi/.gitkeep
+!splices/.gitkeep
 !data/options
 !data/commands.txt
 !routes/**
