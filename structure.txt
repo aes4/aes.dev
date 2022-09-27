@@ -7,6 +7,8 @@ users
         users/account/files/
     notes
         users/account/xi/
+    splices
+        users/account/splices/
     options
         users/account/options
     commands
@@ -26,6 +28,16 @@ global documents
 global useful files
 
     files/
+
+
+global notes?
+
+    xi/
+
+
+global splices
+
+    splices/
 
 
 data needed for programs to work

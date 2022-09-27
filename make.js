@@ -1,4 +1,4 @@
-const {readFile, writeFile} = require('fs').promises;
+const {readFile, writeFile, readdir} = require('fs').promises;
 const {rs} = require('./functions.js');
 
 function clean(base) {
@@ -7,9 +7,7 @@ function clean(base) {
             base.splice(i, 1);
         }
     }
-    base_ = base;
-    base = base_.join("\n");
-    return base;
+    return base.join("\n");
 }
 
 function genid(data, id) {
@@ -43,32 +41,24 @@ function insert(base, data) {
                             fn.slice(13);
                             fn.slice(0, -4);
                             for (let k = 0; k < fun.length; k++) {
-                                if (fn == fun[k]) {
-                                    bol = false;
-                                }
+                                if (fn == fun[k]) { bol = false; }
                             }
                             if (bol) {
                                 fun.push(fn);
                                 for (let l = ii + 1; l < data.length; l++) {
                                     if (data[l].length > 0) {
-                                        if (data[l][0] == ';') {
-                                            break
-                                        }
+                                        if (data[l][0] == ';') { break }
                                     }
                                     line++;
                                     base.splice(i + line, 0, data[l]);
                                 }
                                 line = 0;
-                            } else {
-                                bol = true;
-                            }
+                            } else { bol = true; }
                             break
                         default:
                             for (let l = ii + 1; l < data.length; l++) {
                                 if (data[l].length > 0) {
-                                    if (data[l][0] == ';') {
-                                        break
-                                    }
+                                    if (data[l][0] == ';') { break }
                                 }
                                 line++;
                                 base.splice(i + line, 0, data[l]);
@@ -82,77 +72,62 @@ function insert(base, data) {
     return base;
 }
 
+function replacefunctions(base, data) {
+    let temp;
+    let dataarr = [];
+    let tempcount = 0;
+    for (let i = 0; i < data.length; i++) {
+        if (data[i][0] == ';') {
+            temp = data[i].split(' ');
+            if (temp.length > 1) {
+                dataarr.push([]);
+                for (let ii = i; data[ii] != '    }'; ii++) {
+                    dataarr[tempcount].push(data[ii + 1]);
+                }
+                tempcount++;
+            }
+        }
+    }
+    let insertat = [];
+    for (let i = 0; i < dataarr.length; i++) {
+        for (let ii = base.length - 1; ii >= 0; ii--) {
+            if (dataarr[i][0] == base[ii]) {
+                insertat.push(ii);
+                while (base[ii] != '    }') { base.splice(ii, 1); }
+                base.splice(ii, 1);
+            }
+        }
+    }
+    for (let i = dataarr.length - 1; i >= 0; i--) {
+        for (let ii = dataarr[i].length - 1; ii >= 0; ii--) {
+            base.splice(insertat[i], 0, dataarr[i][ii])
+        }
+    }
+    return base;
+}
+
 //module.exports = async function m(makearr) {
 module.exports = async function m(makearr, options) {  // data is passed instead of options
     let base = await rs('snippets/base');
-    let mods;  // modifications
     let id = 0;  // id number
     // let cstr = cstr_.split(" ");
-    /*
+    let snippet = await rs('snippets/' + makearr + '/default');
+    makearroptions = await readdir('snippets/' + makearr, 'utf8');
+    let optionarr = [];
     for (let i in options) {
-        console.log(i);
-        if (i[0] == ';') {
-            console.log(options[i]);
+        if (i.slice(0, 4) == 'make') {
+            for (ii in makearroptions) {
+                if (i.slice(4) == makearroptions[ii]) {
+                    let option = await rs('snippets/' + makearr + '/' + i.slice(4));
+                    snippet = replacefunctions(snippet, option);
+                    optionarr.push(option);
+                }
+            }
         }
     }
-    */
-    switch (makearr) {  // if multiple docs this might have to be if edit if view if etc insert etc
-        case 'edit':
-            if (options.makelinenumbers == true) {
-                let edit = await rs('snippets/editln');
-                let editcl = await rs('snippets/editcl');
-                mods = genid(edit, id);
-                edit = mods[0];
-                id = mods[1];
-                mods = genid(editcl, id);
-                editcl = mods[0];
-                id = mods[1];
-                data_ = [].concat(edit, editcl);
-                base = insert(base, data_);
-                data = clean(base);
-                return data;
-            } else {
-                let edit = await rs('snippets/edit');
-                let editcl = await rs('snippets/editcl');
-                mods = genid(edit, id);
-                edit = mods[0];
-                id = mods[1];
-                mods = genid(editcl, id);
-                editcl = mods[0];
-                id = mods[1];
-                data_ = [].concat(edit, editcl);
-                base = insert(base, data_);
-                data = clean(base);
-                return data;
-            }
-            break
-        case 'view':
-            //if (options.scroll) {
-            let view = await rs('snippets/viewscroll');
-            let cl = await rs('snippets/cl');  // move?
-            mods = genid(view, id);
-            view = mods[0];
-            id = mods[1];
-            mods = genid(cl, id);
-            cl = mods[0];
-            id = mods[1];
-            data_ = [].concat(view, cl);
-            base = insert(base, data_);
-            data = clean(base);
-            /*} else {
-                let view = await rs('snippets/view');
-                let cl = await rs('snippets/cl');  // move?
-                mods = genid(view, id);
-                view = mods[0];
-                id = mods[1];
-                mods = genid(cl, id);
-                cl = mods[0];
-                id = mods[1];
-                data_ = [].concat(view, cl);
-                base = insert(base, data_);
-                data = clean(base);
-            }*/
-            return data;
-            break
-    }
+    let cl = await rs('snippets/' + makearr + '/cl');
+    [snippet, id] = genid(snippet, id);
+    [cl, id] = genid(cl, id);
+    base = insert(base, [].concat(snippet, cl, ...optionarr));
+    return clean(base);
 }

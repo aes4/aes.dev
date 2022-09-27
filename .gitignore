@@ -12,6 +12,8 @@
 
 !users/.gitkeep
 !snippets/**
+!snippets/edit/**
+!snippets/view/**
 !documents/.gitkeep
 !files/.gitkeep
 !xi/.gitkeep
