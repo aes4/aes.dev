@@ -2,6 +2,7 @@
     let cl = '';
     let cltoggle = false;
     let lastmode;
+    let fileHandle;
 ;function
     function arrtostr(arr) {
         let str = '';
@@ -14,44 +15,58 @@
     }
 ;listener
     window.addEventListener('keydown', clkd);
-    function clkd(event) {
+    async function clkd(event) {
         if (cltoggle) {
             switch (event.key) {
                 case 'Enter':
                     let c = cl.slice(1);
                     // check if new file?
-                    if (c[0] == 's') {
-                        let temp = c.split(' ');
-                        if (temp.length > 1) {
-                            g.filename = temp[1];
-                            if (temp.length > 2) {
-                                g.type = temp[2];
-                            }
-                        } else {
-                            c += ' default';
+                    if (c[0] == 'l' || c[0] == 'w') {
+                        if (c[0] == 'l') {
+                            [fileHandle] = await window.showOpenFilePicker();
+                            let localfile = await fileHandle.getFile();
+                            let temp = await localfile.text();
+                            g.content = strtoarr(temp);
                         }
-                    }
-                    fetch("post", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 'c': c,
-                            'r': reload,
-                            'f': g.filename,
-                            't': g.type,
-                            'g': arrtostr(g.content)
+                        if (c[0] == 'w') {
+                            let save = await fileHandle.createWritable();  // Y NO E?
+                            await save.write(arrtostr(g.content));
+                            await save.close();
+                        }
+                    } else {
+                        if (c[0] == 's') {
+                            let temp = c.split(' ');
+                            if (temp.length > 1) {
+                                g.filename = temp[1];
+                                if (temp.length > 2) {
+                                    g.type = temp[2];
+                                }
+                            } else {
+                                c += ' default';
+                            }
+                        }
+                        fetch("post", {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 'c': c,
+                                'r': reload,
+                                'f': g.filename,
+                                't': g.type,
+                                'g': arrtostr(g.content)
+                            })
                         })
-                    })
-                    .then(res => res.text())
-                    .then(data => {
-                        let base = document.getElementById("base");
-                        let source = document.getElementById("source");
-                        let pls = document.createRange().createContextualFragment(data);
-                        document.body.appendChild(pls);
-                        document.body.removeChild(base);
-                        window.removeEventListener('keydown', clkd);
-                        window.removeEventListener('keydown', tekd);
-                        document.body.removeChild(source);
-                    });
+                        .then(res => res.text())
+                        .then(data => {
+                            let base = document.getElementById("base");
+                            let source = document.getElementById("source");
+                            let pls = document.createRange().createContextualFragment(data);
+                            document.body.appendChild(pls);
+                            document.body.removeChild(base);
+                            window.removeEventListener('keydown', clkd);
+                            window.removeEventListener('keydown', tekd);
+                            document.body.removeChild(source);
+                        });
+                    }
                     cl = '';
                     cltoggle = false;
                     g.mode = lastmode;

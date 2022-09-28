@@ -104,6 +104,9 @@ function replacefunctions(base, data) {
         }
     }
     return base;
+    // might not work if function in snippet is larger than function in base?
+    // incorrect insertat?
+    // if case then insert ;randomchar + randomnum before delete then insert after ;random
 }
 
 //module.exports = async function m(makearr) {
