@@ -6,6 +6,7 @@
         content: [[]],
         placement: {x: 1, y: 1},
         spoint: {},  // selected pivot point
+        found: [],
         filename: '<%- filename %>',
         type: '<%- type %>',  // location to save
         cl: function () {return this.content[this.placement.y - 1]},  // current line
@@ -115,6 +116,18 @@
             }
         }
     }
+    function find(str) {  // find next? maybe start search from point vs look at point and find next?
+        // need to make sure somewhere maybe not in this function a bad find does not error
+        let line, index;
+        for (let i = 0; i < g.content.length; i++) {
+            line = g.content[i].join('');
+            index = line.indexOf(str);
+            while (index != -1) {
+                g.found.push({ y: i + 1, x: index + 1 });
+                index = line.indexOf(str, index + 1);
+            }
+        }
+    }
     function newlineindent() {
         g.content.splice(g.placement.y, 0, []);
         if (g.cl()[g.cll() - 1] == "{") {
@@ -158,14 +171,14 @@
         }
         return arr;
     }
-    function splace() {  // g.splacements change function name because visualine will use something diff?
+    function visualsp() {  // visualselectedplacements
         g.splacements = [];
         if (g.placement.y < g.spoint.y) {
             for (let ix = g.placement.x; ix <= g.content[g.placement.y - 1].length; ix++) {
                 g.splacements.push({ x: ix, y: g.placement.y });
             }
             for (let iy = g.placement.y + 1; iy < g.spoint.y; iy++) {
-                for (let ix = 1; ix <= g.content[iy - 1].length; ix++) {
+                for (var ix = 1, len = g.content[iy - 1].length; ix <= len; ix++) {
                     g.splacements.push({ x: ix, y: iy });
                 }
             }
@@ -177,7 +190,7 @@
                 g.splacements.push({ x: ix, y: g.spoint.y });
             }
             for (let iy = g.spoint.y + 1; iy < g.placement.y; iy++) {
-                for (let ix = 1; ix <= g.content[iy - 1].length; ix++) {
+                for (var ix = 1, len = g.content[iy - 1].length; ix <= len; ix++) {
                     g.splacements.push({ x: ix, y: iy });
                 }
             }
@@ -201,6 +214,7 @@
         }
     }
     function delsel() {  // delete selected note: really broken
+        visualsp()
         for (let s = g.splacements.length - 1; s >= 0; s--) {
             g.content[g.splacements[s].y - 1].splice(g.splacements[s].x - 1, 1);
         }
@@ -236,44 +250,6 @@
             case 'o':
                 [g.placement, g.spoint] = [g.spoint, g.splacement];
                 break
-            case 'h':  // move left
-                if (g.placement.x > 1) { g.placement.x -= 1; }
-                break
-            case 'c':  // move up
-                if (g.placement.y > 1) { g.placement.y -= 1; }
-                resetx();
-                break
-            case 't':  // move down
-                if (g.placement.y < g.content.length) { g.placement.y += 1; }
-                resetx();
-                break
-            case 'n':  // move left
-                if (g.placement.x < g.eol()) { g.placement.x += 1; }
-                break
-            case 'H':  // move left
-                if (prev(('dCapsLock'))) {
-                    g.buffer = [];
-                    g.cl().splice(0, g.placement.x - 1);
-                }
-                if (g.placement.x > 1) { g.placement.x = 1; }
-                resetx();
-                break
-            case 'C':  // move up
-                if (g.placement.y > 1) { g.placement.y = 1; }
-                resetx();
-                break
-            case 'T':  // move down
-                if (g.placement.y < g.content.length) { g.placement.y = g.content.length; }
-                resetx();
-                break
-            case 'N':  // move left
-                if (prev('dCapsLock')) {
-                    g.buffer = [];
-                    g.cl().splice(g.placement.x, g.cll());
-                } else {
-                    if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
-                }
-                break
         }
     }
     async function normal(key) {
@@ -290,6 +266,9 @@
                     g.splacements.push({ x: i, y: g.placement.y });
                 }
                 g.mode = 'visualine';
+                break
+            case 'l':  // temp keybind
+                g.mode = 'splice';
                 break
             case 'a':
                 g.mode = 'insert';
@@ -541,13 +520,14 @@
         }
     }
     async function visual(key) {
-        splace();
+        visualsp();
         switch(key) {
             case 'v':
                 g.splacements = [];
                 g.mode = 'normal';
                 break
             case 'V':
+                g.splacements = [];
                 g.spoint = { x: g.placement.x, y: g.placement.y };
                 for (let i = 1; i <= g.eol(); i++) {
                     g.splacements.push({ x: i, y: g.placement.y });
@@ -619,6 +599,44 @@
                 g.mode = 'normal';
                 r();
                 break
+            case 'h':  // move left
+                if (g.placement.x > 1) { g.placement.x -= 1; }
+                break
+            case 'c':  // move up
+                if (g.placement.y > 1) { g.placement.y -= 1; }
+                resetx();
+                break
+            case 't':  // move down
+                if (g.placement.y < g.content.length) { g.placement.y += 1; }
+                resetx();
+                break
+            case 'n':  // move left
+                if (g.placement.x < g.eol()) { g.placement.x += 1; }
+                break
+            case 'H':  // move left
+                if (prev(('dCapsLock'))) {
+                    g.buffer = [];
+                    g.cl().splice(0, g.placement.x - 1);
+                }
+                if (g.placement.x > 1) { g.placement.x = 1; }
+                resetx();
+                break
+            case 'C':  // move up
+                if (g.placement.y > 1) { g.placement.y = 1; }
+                resetx();
+                break
+            case 'T':  // move down
+                if (g.placement.y < g.content.length) { g.placement.y = g.content.length; }
+                resetx();
+                break
+            case 'N':  // move left
+                if (prev('dCapsLock')) {
+                    g.buffer = [];
+                    g.cl().splice(g.placement.x, g.cll());
+                } else {
+                    if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
+                }
+                break
             case 'd':
                 delsel();
                 if (prev('d')) {
@@ -681,34 +699,58 @@
                     indenttoggle = true;
                 }
                 break
-            /*
-            case 'test':  // check is same code as normal mode
-                normal(key);
-                break
-            */
         }
-        splace();
+        visualsp();
     }
     function visualine(key) {
-        switch(key) {
+        switch (key) {
             case ':(':
                 break
         }
     }
     /*
     function visualblock(key) {
-        switch(key) {
+        switch (key) {
             // do stuff
         }
     }
     */
-    /*
     function splice(key) {
-        switch(key) {
-            // do stuff
+        switch (key) {
+            case 'Escape':
+                g.mode = 'normal';
+                break
+            // move through find search tc or nh
+            case 'n':
+                if (foundindex + 1 < g.found.length) {
+                    foundindex++;
+                }
+                g.placement.y = g.found[foundindex].y;
+                g.placement.x = g.found[foundindex].x;
+                break
+            case 'h':
+                if (foundindex > 0) {
+                    foundindex--;
+                }
+                g.placement.y = g.found[foundindex].y;
+                g.placement.x = g.found[foundindex].x;
+                break
+            case 't':
+                if (foundindex + 1 < g.found.length) {
+                    foundindex++;
+                }
+                g.placement.y = g.found[foundindex].y;
+                g.placement.x = g.found[foundindex].x;
+                break
+            case 'c':
+                if (foundindex > 0) {
+                    foundindex--;
+                }
+                g.placement.y = g.found[foundindex].y;
+                g.placement.x = g.found[foundindex].x;
+                break
         }
     }
-    */
     function replace(key) {
         switch (key) {
             case 'Enter':
@@ -825,7 +867,6 @@
                 }
                 break
             */
-            /*
             case 'splice':
                 if (Number.isFinite(Number(key))) { g.count += key } else {
                     if (Number(g.count) > 1) {
@@ -834,7 +875,6 @@
                     } else { splice(key); }
                 }
                 break
-            */
             case 'replace':
                 replace(key);
                 break

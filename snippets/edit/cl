@@ -3,6 +3,7 @@
     let cltoggle = false;
     let lastmode;
     let fileHandle;
+    let foundindex = 0;
 ;function
     function arrtostr(arr) {
         let str = '';
@@ -21,7 +22,7 @@
                 case 'Enter':
                     let c = cl.slice(1);
                     // check if new file?
-                    if (c[0] == 'l' || c[0] == 'w') {
+                    if (c[0] == 'l' || c[0] == 'w' || c[0] == 'f') {  // loop through ['l', 'w', 'f'] later
                         if (c[0] == 'l') {
                             [fileHandle] = await window.showOpenFilePicker();
                             let localfile = await fileHandle.getFile();
@@ -32,6 +33,12 @@
                             let save = await fileHandle.createWritable();  // Y NO E?
                             await save.write(arrtostr(g.content));
                             await save.close();
+                        }
+                        if (c[0] == 'f') {
+                            g.found = [];
+                            find(cl.slice(2, cl.length));
+                            g.placement.y = g.found[foundindex].y;
+                            g.placement.x = g.found[foundindex].x;
                         }
                     } else {
                         if (c[0] == 's') {
@@ -96,7 +103,7 @@
                 default:
                     cl += event.key
             }
-        } else if (event.key == ';') {
+        } else if ((event.key == ';') && !(g.mode == 'insert')) {
             cl += ';';
             cltoggle = true;
             lastmode = g.mode;
