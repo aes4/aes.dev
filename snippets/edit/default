@@ -4,6 +4,7 @@
         count: '',  // might change variable name
         buffer: [],  // might not need ?
         content: [[]],
+        splice: [[]],
         placement: {x: 1, y: 1},
         spoint: {},  // selected pivot point
         found: [],
@@ -720,34 +721,56 @@
             case 'Escape':
                 g.mode = 'normal';
                 break
-            // move through find search tc or nh
-            case 'n':
-                if (foundindex + 1 < g.found.length) {
-                    foundindex++;
+            case 'Enter':  // temp keybind
+                for (let i = g.splice.length - 1; i >= 0; i--) {
+                    if (g.cl().join('') == g.splice[i].slice(1, g.splice[i].length).join('')) {
+                        if (g.content.length > 1) {
+                            g.content.splice(g.placement.y - 1, 1);
+                            if (g.placement.y >= g.content.length) {
+                                g.placement.y -= 1;
+                            }
+                        } else {
+                            g.content = [[]];
+                            g.placement.x = 1;
+                        }
+                        for (let ii = i + 1; ii < g.splice.length; ii++) {
+                            if (g.splice[ii][0] == 'Ψ') {
+                                for (let u = ii; u >= i + 1; u--) {
+                                    g.content.splice(g.placement.y - 1, 0, g.splice[u]);
+                                }
+                                break
+                            } else if (ii == g.splice.length - 1) {
+                                for (let u = ii; u >= i + 1; u--) {
+                                    g.content.splice(g.placement.y - 1, 0, g.splice[u]);
+                                }
+                            }
+                        }
+                    }
                 }
-                g.placement.y = g.found[foundindex].y;
-                g.placement.x = g.found[foundindex].x;
-                break
-            case 'h':
-                if (foundindex > 0) {
-                    foundindex--;
-                }
-                g.placement.y = g.found[foundindex].y;
-                g.placement.x = g.found[foundindex].x;
+                // jumps?
+                r();
                 break
             case 't':
-                if (foundindex + 1 < g.found.length) {
-                    foundindex++;
-                }
-                g.placement.y = g.found[foundindex].y;
-                g.placement.x = g.found[foundindex].x;
+                    // find note
                 break
-            case 'c':
-                if (foundindex > 0) {
-                    foundindex--;
+            // move through find search
+            case 'n':
+                if (g.found.length > 0) {
+                    if (foundindex + 1 < g.found.length) {
+                        foundindex++;
+                    }
+                    g.placement.y = g.found[foundindex].y;
+                    g.placement.x = g.found[foundindex].x;
                 }
-                g.placement.y = g.found[foundindex].y;
-                g.placement.x = g.found[foundindex].x;
+                break
+            case 'h':
+                if (g.found.length > 0) {
+                    if (foundindex > 0) {
+                        foundindex--;
+                    }
+                    g.placement.y = g.found[foundindex].y;
+                    g.placement.x = g.found[foundindex].x;
+                }
                 break
         }
     }
@@ -955,6 +978,7 @@
     main();
 ;run
     g.content = ll(<%- content %>);
+    g.splice = ll(<%- splice %>);
     let lines = 0;  // also round down (canvas.height - (2 * (textborder + textbordery))) / (charvrange + linespacing); works
     for (let i = 0; ((i * (charvrange + linespacing)) + (2 * (textborder + textbordery))) < canvas.height; i++) {
         lines += 1;

@@ -1,5 +1,12 @@
 const {readFile, writeFile, readdir} = require('fs').promises;
-const {rs} = require('./functions.js');
+// const {rs} = require('./functions.js');
+// can't import fix later
+async function rs(filename) {  // read and split
+    let temp = await readFile(filename, 'utf8');
+    temp = temp.split("\n");
+    temp.pop()
+    return temp;
+}
 
 function clean(base) {
     for (let i = 0; i < base.length; i++) {
@@ -109,8 +116,7 @@ function replacefunctions(base, data) {
     // if case then insert ;randomchar + randomnum before delete then insert after ;random
 }
 
-//module.exports = async function m(makearr) {
-module.exports = async function m(makearr, options) {  // data is passed instead of options
+module.exports = async function m(makearr, options) {
     let base = await rs('snippets/base');
     let id = 0;  // id number
     // let cstr = cstr_.split(" ");

@@ -1,6 +1,6 @@
 var ejs;
 const {readFile, writeFile, readdir} = require('fs').promises;
-const {preparedata, rs, s, j} = require("../functions.js");
+const {preparepack, preparedata, rs, s, j} = require("../functions.js");
 
 ejs = require("ejs");
 m = require("../make.js");
@@ -9,9 +9,10 @@ p = require("../process.js");
 // directory paths
 const du = '/home/ubuntu/aes.dev/users/';
 const ds = '/home/ubuntu/aes.dev/snippets/';
-const dup = '/home/ubuntu/aes.dev/upload/';
 const dd = '/home/ubuntu/aes.dev/documents/';
 const df = '/home/ubuntu/aes.dev/files/';
+const dx = '/home/ubuntu/aes.dev/xi/';
+const dsp = '/home/ubuntu/aes.dev/splices/';
 const da = '/home/ubuntu/aes.dev/data/';
 const dr = '/home/ubuntu/aes.dev/routes/';
 
@@ -45,6 +46,12 @@ module.exports = function(server) {
                                         case 'file':
                                             data = await preparedata(du + 'Aes/options', df + sreload[1], reload);
                                             break
+                                        case 'xi':
+                                            data = await preparedata(du + 'Aes/options', dx + sreload[1], reload);
+                                            break
+                                        case 'splice':
+                                            data = await preparedata(du + 'Aes/options', dsp + sreload[1], reload);
+                                            break
                                         case 'user':
                                             data = await preparedata(du + 'Aes/options', du + 'Aes/' + sreload[1], reload);
                                             break
@@ -56,99 +63,251 @@ module.exports = function(server) {
                                     break
                                 case 'view':
                                     documentnames = await readdir(dd, 'utf8'); // ar
-                                    for (u = 0; u < documentnames.length; u++) {
-                                        if (cmd[1] == documentnames[u]) { // str
-                                            data = await preparedata(du + 'Aes/options', dd + cmd[1], 'view ' + cmd[1]);
-                                            data.filename = cmd[1];
-                                            data.type = 'document';
-                                            pack = ejs.render(await m('view', data), data);
+                                    for (let a = documentnames.length - 1; a >= 0; a--) {
+                                        if (cmd[1] == documentnames[a]) { // str
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'document',
+                                            { content: dd + cmd[1], options: du + 'Aes/options' });
                                             res.send(pack);
                                             found = true;
                                         }
                                     }
                                     if (!found) {
                                         filenames = await readdir(df, 'utf8');
-                                        for (uu = 0; uu < filenames.length; uu++) {
-                                            if (cmd[1] == filenames[uu]) {
-                                                data = await preparedata(du + 'Aes/options', df + cmd[1], 'view ' + cmd[1]);
-                                                data.filename = cmd[1];
-                                                data.type = 'file';
-                                                pack = ejs.render(await m('view', data), data);
+                                        for (let b = filenames.length - 1; b >= 0; b--) {
+                                            if (cmd[1] == filenames[b]) {
+                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'file',
+                                                { content: df + cmd[1], options: du + 'Aes/options' });
+                                                res.send(pack);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        splicenames = await readdir(dsp, 'utf8');
+                                        for (let c = splicenames.length - 1; c >= 0; c--) {
+                                            if (cmd[1] == splicenames[c]) {
+                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
+                                                { content: dsp + cmd[1], options: du + 'Aes/options' });
+                                                res.send(pack);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        notenames = await readdir(dx, 'utf8');
+                                        for (let d = notenames.length - 1; d >= 0; d--) {
+                                            if (cmd[1] == notenames[d]) {
+                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
+                                                { content: dx + cmd[1], options: du + 'Aes/options' });
                                                 res.send(pack);
                                                 found = true;
                                             }
                                         }
                                     }
                                     if (cmd[1] == 'options' && !found) {
-                                        data = await preparedata(du + 'Aes/options', du + 'Aes/' + cmd[1], 'view ' + cmd[1]);
-                                        data.filename = cmd[1];
-                                        data.type = 'user';
-                                        pack = ejs.render(await m('view', data), data);
+                                        pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'user',
+                                        { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
                                         res.send(pack);
                                         found = true;
                                     }
                                     if (cmd[1] == 'commands.txt' && !found) {
-                                        data = await preparedata(du + 'Aes/options', du + 'Aes/' + cmd[1], 'view ' + cmd[1]);
-                                        data.filename = cmd[1];
-                                        data.type = 'user';
-                                        pack = ejs.render(await m('view', data), data);
+                                        pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'user',
+                                        { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
                                         res.send(pack);
                                         found = true;
                                     }
                                     if (!found) {
-                                        data = await preparedata(du + 'Aes/options', dd + 'notfound', 'view notfound');
-                                        data.filename = 'notfound';
-                                        data.type = 'document';
-                                        pack = ejs.render(await m('view', data), data);
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'viewdocument':
+                                    documentnames = await readdir(dd, 'utf8'); // ar
+                                    for (let a = documentnames.length - 1; a >= 0; a--) {
+                                        if (cmd[1] == documentnames[a]) { // str
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'document',
+                                            { content: dd + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'viewfile':
+                                    filenames = await readdir(df, 'utf8');
+                                    for (let b = filenames.length - 1; b >= 0; b--) {
+                                        if (cmd[1] == filenames[b]) {
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'file',
+                                            { content: df + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'viewsplice':
+                                    splicenames = await readdir(dsp, 'utf8');
+                                    for (let c = splicenames.length - 1; c >= 0; c--) {
+                                        if (cmd[1] == splicenames[c]) {
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
+                                            { content: dsp + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'viewnote':
+                                    notenames = await readdir(dx, 'utf8');
+                                    for (let d = notenames.length - 1; d >= 0; d--) {
+                                        if (cmd[1] == notenames[d]) {
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
+                                            { content: dx + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
                                         res.send(pack);
                                     }
                                     break
                                 case 'edit':
                                     documentnames = await readdir(dd, 'utf8');
-                                    for (u = 0; u < documentnames.length; u++) {
-                                        if (cmd[1] == documentnames[u]) { // str
-                                            data = await preparedata(du + 'Aes/options', dd + cmd[1], 'edit ' + cmd[1]);
-                                            data.filename = cmd[1];
-                                            data.type = 'document';
-                                            pack = ejs.render(await m('edit', data), data);
+                                    for (let a = documentnames.length - 1; a >= 0; a--) {
+                                        if (cmd[1] == documentnames[a]) { // str
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
+                                            { content: dd + cmd[1], options: du + 'Aes/options' });
                                             res.send(pack);
                                             found = true;
                                         }
                                     }
                                     if (!found) {
                                         filenames = await readdir(df, 'utf8');
-                                        for (uu = 0; uu < filenames.length; uu++) {
-                                            if (cmd[1] == filenames[uu]) {
-                                                data = await preparedata(du + 'Aes/options', df + cmd[1], 'edit ' + cmd[1]);
-                                                data.filename = cmd[1];
-                                                data.type = 'file';
-                                                pack = ejs.render(await m('edit', data), data);
+                                        for (let b = filenames.length - 1; b >= 0; b--) {
+                                            if (cmd[1] == filenames[b]) {
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                { content: df + cmd[1], options: du + 'Aes/options' });
+                                                res.send(pack);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        notenames = await readdir(dx, 'utf8');
+                                        for (let d = notenames.length - 1; d >= 0; d--) {
+                                            if (cmd[1] == notenames[d]) {
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                { content: dx + cmd[1], options: du + 'Aes/options' });
+                                                res.send(pack);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        splicenames = await readdir(dsp, 'utf8');
+                                        for (let c = splicenames.length - 1; c >= 0; c--) {
+                                            if (cmd[1] == splicenames[c]) {
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                { content: dsp + cmd[1], options: du + 'Aes/options' });
                                                 res.send(pack);
                                                 found = true;
                                             }
                                         }
                                     }
                                     if (cmd[1] == 'options' && !found) {
-                                        data = await preparedata(du + 'Aes/options', du + 'Aes/' + cmd[1], 'edit ' + cmd[1]);
-                                        data.filename = cmd[1];
-                                        data.type = 'user';
-                                        pack = ejs.render(await m('edit', data), data);
+                                        pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
+                                        { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
                                         res.send(pack);
                                         found = true;
                                     }
                                     if (cmd[1] == 'commands.txt' && !found) {
-                                        data = await preparedata(du + 'Aes/options', du + 'Aes/' + cmd[1], 'edit ' + cmd[1]);
-                                        data.filename = cmd[1];
-                                        data.type = 'user';
-                                        pack = ejs.render(await m('edit', data), data);
+                                        pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
+                                        { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
                                         res.send(pack);
                                         found = true;
                                     }
                                     if (!found) {
-                                        data = await preparedata(du + 'Aes/options', dd + 'notfound', 'view notfound');
-                                        data.filename = 'notfound';
-                                        data.type = 'document';
-                                        pack = ejs.render(await m('view', data), data);
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'editdocument':
+                                    documentnames = await readdir(dd, 'utf8');
+                                    for (let a = documentnames.length - 1; a >= 0; a--) {
+                                        if (cmd[1] == documentnames[a]) { // str
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
+                                            { content: dd + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'editfile':
+                                    filenames = await readdir(df, 'utf8');
+                                    for (let b = filenames.length - 1; b >= 0; b--) {
+                                        if (cmd[1] == filenames[b]) {
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                            { content: df + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'editnote':
+                                    notenames = await readdir(dx, 'utf8');
+                                    for (let d = notenames.length - 1; d >= 0; d--) {
+                                        if (cmd[1] == notenames[d]) {
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                            { content: dx + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'editsplice':
+                                    splicenames = await readdir(dsp, 'utf8');
+                                    for (let c = splicenames.length - 1; c >= 0; c--) {
+                                        if (cmd[1] == splicenames[c]) {
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                            { content: dsp + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
                                         res.send(pack);
                                     }
                                     break
@@ -178,10 +337,8 @@ module.exports = function(server) {
                                         found = true;
                                     }
                                     if (!found) {
-                                        data = await preparedata(du + 'Aes/options', dd + 'notfound', 'view notfound');
-                                        data.filename = 'notfound';
-                                        data.type = 'document';
-                                        pack = ejs.render(await m('view', data), data);
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
                                         res.send(pack);
                                     }
                                     break
@@ -198,6 +355,14 @@ module.exports = function(server) {
                                                 data = await preparedata(du + 'Aes/options', df + sreload[1], reload);
                                                 writeFile(df + req.body.f, req.body.g);
                                                 break
+                                            case 'xi':
+                                                data = await preparedata(du + 'Aes/options', dx + sreload[1], reload);
+                                                writeFile(dx + req.body.f, req.body.g);
+                                                break
+                                            case 'splice':
+                                                data = await preparedata(du + 'Aes/options', dsp + sreload[1], reload);
+                                                writeFile(dsp + req.body.f, req.body.g);
+                                                break
                                             case 'user':
                                                 data = await preparedata(du + 'Aes/options', du + 'Aes/' + sreload[1], reload);
                                                 writeFile(du + 'Aes/' + req.body.f, req.body.g);
@@ -211,32 +376,60 @@ module.exports = function(server) {
                                     content.pop();  // temp, also temp in preparedata
                                     content = JSON.stringify(content);
                                     data.content = content;
+                                    data.splice = '[""]';
                                     pack = ejs.render(await m(sreload[0], data), data);
                                     res.send(pack);
                                     break
+                                case 'grab':
+                                    reload = req.body.r;  // e test or e test;grab g
+                                    // sreload = s(reload, ";")
+                                    sreload = s(reload, " ");
+                                    for (let u = 0; u < cmds.length; u++) {
+                                        for (let uu = 0; uu < cmds[u].length; uu++) {
+                                            if (sreload[0] == cmds[u][uu]) {
+                                                switch (req.body.t) {  // what if unknown type
+                                                    case 'document':  // in future 2nd arg reload should have ...ad[1] + ';grab ' + cmd[1]  // e test;grab g
+                                                        pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'document',
+                                                        { content: dd + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        break
+                                                    case 'file':
+                                                        pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'file',
+                                                        { content: df + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        break
+                                                    case 'xi':
+                                                        pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'xi',
+                                                        { content: dx + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        break
+                                                    case 'splice':
+                                                        pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'splice',
+                                                        { content: dsp + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        break
+                                                    case 'user':
+                                                        pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'user',
+                                                        { content: du + 'Aes/' + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        break
+                                                }
+                                            }
+                                        }
+                                    }
+                                    res.send(pack);
+                                    break
                                 default:
-                                    data = await preparedata(du + 'Aes/options', dd + 'commandnotimplemented', 'view commandnotimplemented');
-                                    data.filename = 'commandnotimplemented';
-                                    data.type = 'document';
-                                    pack = ejs.render(await m('view', data), data);
+                                    pack = await preparepack('view', 'view commandnotimplemented', 'commandnotimplemented', 'document',
+                                    { content: dd + 'commandnotimplemented', options: du + 'Aes/options' });
                                     res.send(pack);
                             }
                         } else if (i == cmds.length - 1 && ii == cmds[i].length - 1) {
                             if (!cmdfound) {
-                                data = await preparedata(du + 'Aes/options', dd + 'commandnotfound', 'view commandnotfound');
-                                data.filename = 'commandnotfound';
-                                data.type = 'document';
-                                pack = ejs.render(await m('view', data), data);
+                                pack = await preparepack('view', 'view commandnotfound', 'commandnotfound', 'document',
+                                { content: dd + 'commandnotfound', options: du + 'Aes/options' });
                                 res.send(pack);
                             }
                         }
                     }
                 }
             } else {
-                data = await preparedata(du + 'Aes/options', dd + 'noargs', 'view noargs');
-                data.filename = 'noargs';
-                data.type = 'document';
-                pack = ejs.render(await m('view', data), data);
+                pack = await preparepack('view', 'view noargs', 'noargs', 'document', { content: dd + 'noargs', options: du + 'Aes/options' });
                 res.send(pack);
             }
         } else {

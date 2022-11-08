@@ -8,9 +8,10 @@ m = require("../make.js");
 // directory paths
 const du = '/home/ubuntu/aes.dev/users/';
 const ds = '/home/ubuntu/aes.dev/snippets/';
-const dup = '/home/ubuntu/aes.dev/upload/';
 const dd = '/home/ubuntu/aes.dev/documents/';
 const df = '/home/ubuntu/aes.dev/files/';
+const dx = '/home/ubuntu/aes.dev/xi/'; // ?
+const dsp = '/home/ubuntu/aes.dev/splices/';
 const da = '/home/ubuntu/aes.dev/data/';
 const dr = '/home/ubuntu/aes.dev/routes/';
 
@@ -19,17 +20,10 @@ module.exports = function(server) {
         let data;
         let ip = await readFile(da + 'ip.txt', 'utf8');
         if (req.ip == ip) {
-            //pack = await preparepack('view', du + 'Aes/options', dd + 'home', 'view home');
-            data = await preparedata(du + 'Aes/options', dd + 'home', 'view home');
-            data.filename = 'home';
-            data.type = 'document';
-            pack = ejs.render(await m('view', data), data);
+            pack = await preparepack('view', 'view home', 'home', 'document', { content: dd + 'home', options: du + 'Aes/options' });
             res.send(pack);
         } else {
-            data = await preparedata(da + 'options', dd + 'home', 'view home');
-            data.filename = 'home';
-            data.type = 'document';
-            pack = ejs.render(await m('view', data), data);
+            pack = await preparepack('view', 'view home', 'home', 'document', { content: dd + 'home', options: da + 'options' });
             res.send(pack);
         }
     });
