@@ -58,8 +58,15 @@ module.exports = function(server) {
                                     }
                                     data.filename = req.body.f;
                                     data.type = req.body.t;
+                                    content_ = req.body.g;
+                                    content = content_.split(`\n`);
+                                    content.pop();  // temp, also temp in preparedata
+                                    content = JSON.stringify(content);
+                                    data.content = content;
+                                    data.splice = '[""]';
                                     pack = ejs.render(await m(sreload[0], data), data);
                                     res.send(pack);
+                                    // return content
                                     break
                                 case 'view':
                                     documentnames = await readdir(dd, 'utf8'); // ar
@@ -371,11 +378,12 @@ module.exports = function(server) {
                                     }
                                     data.filename = req.body.f;
                                     data.type = req.body.t;
-                                    let content_ = req.body.g;
+                                    content_ = req.body.g;
                                     content = content_.split(`\n`);
                                     content.pop();  // temp, also temp in preparedata
                                     content = JSON.stringify(content);
                                     data.content = content;
+                                    data.pos = req.body.p;
                                     data.splice = '[""]';
                                     pack = ejs.render(await m(sreload[0], data), data);
                                     res.send(pack);
@@ -384,29 +392,30 @@ module.exports = function(server) {
                                     reload = req.body.r;  // e test or e test;grab g
                                     // sreload = s(reload, ";")
                                     sreload = s(reload, " ");
+                                    pos = req.body.p;
                                     for (let u = 0; u < cmds.length; u++) {
                                         for (let uu = 0; uu < cmds[u].length; uu++) {
                                             if (sreload[0] == cmds[u][uu]) {
                                                 switch (req.body.t) {  // what if unknown type
                                                     case 'document':  // in future 2nd arg reload should have ...ad[1] + ';grab ' + cmd[1]  // e test;grab g
                                                         pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'document',
-                                                        { content: dd + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        { content: dd + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                         break
                                                     case 'file':
                                                         pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'file',
-                                                        { content: df + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        { content: df + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                         break
                                                     case 'xi':
                                                         pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'xi',
-                                                        { content: dx + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        { content: dx + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                         break
                                                     case 'splice':
                                                         pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'splice',
-                                                        { content: dsp + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        { content: dsp + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                         break
                                                     case 'user':
                                                         pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'user',
-                                                        { content: du + 'Aes/' + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, cmd[1]);
+                                                        { content: du + 'Aes/' + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                         break
                                                 }
                                             }

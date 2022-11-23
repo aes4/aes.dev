@@ -5,7 +5,7 @@ ejs = require("ejs");
 m = require("./make.js");
 
 module.exports = {
-    preparepack: async function preparepack(makearr, reload, filename, type, paths, splice = '[""]') {
+    preparepack: async function preparepack(makearr, reload, filename, type, paths, pos={ x: 1, y: 1 }, splice = '[""]') {
         let optionsdata = await readFile(paths.options);
         let options = JSON.parse(optionsdata);
         let content = await readFile(paths.content, 'utf8');
@@ -21,6 +21,7 @@ module.exports = {
         let data = options;
         data.content = content;
         data.reload = reload;
+        data.pos = pos;
         data.splice = splice;
         data.filename = filename;
         data.type = type;

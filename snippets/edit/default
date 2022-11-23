@@ -5,7 +5,8 @@
         buffer: [],  // might not need ?
         content: [[]],
         splice: [[]],
-        placement: {x: 1, y: 1},
+        note: [[]],
+        placement: { x: <%- pos.x %>, y: <%- pos.y %> },
         spoint: {},  // selected pivot point
         found: [],
         filename: '<%- filename %>',
@@ -117,10 +118,17 @@
             }
         }
     }
-    function find(str) {  // find next? maybe start search from point vs look at point and find next?
-        // need to make sure somewhere maybe not in this function a bad find does not error
+    function find(str) {
         let line, index;
-        for (let i = 0; i < g.content.length; i++) {
+        for (let i = g.placement.y - 1; i < g.content.length; i++) {
+            line = g.content[i].join('');
+            index = line.indexOf(str);
+            while (index != -1) {
+                g.found.push({ y: i + 1, x: index + 1 });
+                index = line.indexOf(str, index + 1);
+            }
+        }
+        for (let i = 0; i < g.placement.y - 1; i++) {
             line = g.content[i].join('');
             index = line.indexOf(str);
             while (index != -1) {
@@ -751,7 +759,21 @@
                 r();
                 break
             case 't':
-                    // find note
+                    let c = g.cl().join('').split(' ')[0];
+                    fetch("temp", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 'c': c } )
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        data = JSON.parse(data);
+                        g.note = ll(data);
+                        g.content[g.placement.y - 1] = g.note[0];
+                        for (let i = g.note.length - 1; i > 0; i--) {
+                            g.content.splice(g.placement.y, 0, g.note[i]);
+                        }
+                    });
                 break
             // move through find search
             case 'n':

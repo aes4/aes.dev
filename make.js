@@ -127,9 +127,11 @@ module.exports = async function m(makearr, options) {
         if (i.slice(0, 4) == 'make') {
             for (ii in makearroptions) {
                 if (i.slice(4) == makearroptions[ii]) {
-                    let option = await rs('snippets/' + makearr + '/' + i.slice(4));
-                    snippet = replacefunctions(snippet, option);
-                    optionarr.push(option);
+                    if (options[i]) {
+                        let option = await rs('snippets/' + makearr + '/' + i.slice(4));
+                        snippet = replacefunctions(snippet, option);
+                        optionarr.push(option);
+                    }
                 }
             }
         }

@@ -1,0 +1,12 @@
+;swap find
+    function find(str) {
+        let line, index;
+        for (let i = 0; i < g.content.length; i++) {
+            line = g.content[i].join('');
+            index = line.indexOf(str);
+            while (index != -1) {
+                g.found.push({ y: i + 1, x: index + 1 });
+                index = line.indexOf(str, index + 1);
+            }
+        }
+    }
