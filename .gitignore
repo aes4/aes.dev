@@ -18,6 +18,7 @@
 !files/.gitkeep
 !xi/.gitkeep
 !splices/.gitkeep
+!sf/.gitkeep
 !data/options
 !data/commands.txt
 !routes/**
