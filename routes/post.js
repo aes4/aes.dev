@@ -59,10 +59,11 @@ module.exports = function(server) {
                                     data.filename = req.body.f;
                                     data.type = req.body.t;
                                     content_ = req.body.g;
-                                    content = content_.split(`\n`);
+                                    content = content_.split(`\n`);  // undefined check later?
                                     content.pop();  // temp, also temp in preparedata
                                     content = JSON.stringify(content);
                                     data.content = content;
+                                    data.pos = req.body.p;
                                     data.splice = '[""]';
                                     pack = ejs.render(await m(sreload[0], data), data);
                                     res.send(pack);
