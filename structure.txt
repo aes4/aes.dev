@@ -55,6 +55,7 @@ routes
         root.js
         post.js
         git.js
+        sf.js
         snippets.js  // construct through url?
         ip.js?
         any.js

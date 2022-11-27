@@ -15,6 +15,7 @@ const dx = '/home/ubuntu/aes.dev/xi/';
 const dsp = '/home/ubuntu/aes.dev/splices/';
 const da = '/home/ubuntu/aes.dev/data/';
 const dr = '/home/ubuntu/aes.dev/routes/';
+const dsf = '/home/ubuntu/aes.dev/sf/';
 
 module.exports = function(server) {
     server.post('/post', async function (req, res) {
@@ -55,6 +56,8 @@ module.exports = function(server) {
                                         case 'user':
                                             data = await preparedata(du + 'Aes/options', du + 'Aes/' + sreload[1], reload);
                                             break
+                                        case 'server':
+                                            data = await preparedata(du + 'Aes/options', dsf + sreload[1], reload);
                                     }
                                     data.filename = req.body.f;
                                     data.type = req.body.t;
@@ -105,8 +108,19 @@ module.exports = function(server) {
                                         notenames = await readdir(dx, 'utf8');
                                         for (let d = notenames.length - 1; d >= 0; d--) {
                                             if (cmd[1] == notenames[d]) {
-                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
+                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'xi',
                                                 { content: dx + cmd[1], options: du + 'Aes/options' });
+                                                res.send(pack);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        sfnames = await readdir(dsf, 'utf8');
+                                        for (let e = sfnames.length -1; e >= 0; e--) {
+                                            if (cmd[1] == sfnames[e]) {
+                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'server',
+                                                { content: dsf + cmd[1], options: du + 'Aes/options' });
                                                 res.send(pack);
                                                 found = true;
                                             }
@@ -182,8 +196,24 @@ module.exports = function(server) {
                                     notenames = await readdir(dx, 'utf8');
                                     for (let d = notenames.length - 1; d >= 0; d--) {
                                         if (cmd[1] == notenames[d]) {
-                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'xi',
                                             { content: dx + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'viewsf':
+                                    sfnames = await readdir(dsf, 'utf8');
+                                    for (let e = sfnames.length - 1; e >= 0; e--) {
+                                        if (cmd[1] == sfnames[d]) {
+                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'server',
+                                            { content: dsf + cmd[1], options: du + 'Aes/options' });
                                             res.send(pack);
                                             found = true;
                                         }
@@ -219,7 +249,7 @@ module.exports = function(server) {
                                         notenames = await readdir(dx, 'utf8');
                                         for (let d = notenames.length - 1; d >= 0; d--) {
                                             if (cmd[1] == notenames[d]) {
-                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'xi',
                                                 { content: dx + cmd[1], options: du + 'Aes/options' });
                                                 res.send(pack);
                                                 found = true;
@@ -230,8 +260,19 @@ module.exports = function(server) {
                                         splicenames = await readdir(dsp, 'utf8');
                                         for (let c = splicenames.length - 1; c >= 0; c--) {
                                             if (cmd[1] == splicenames[c]) {
-                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'splice',
                                                 { content: dsp + cmd[1], options: du + 'Aes/options' });
+                                                res.send(pack);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        sfnames = await readdir(dsf, 'utf8');
+                                        for (let e = sfnames.length - 1; e >= 0; e--) {
+                                            if (cmd[1] == sfnames[e]) {
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'server',
+                                                { content: dsf + cmd[1], options: du + 'Aes/options' });
                                                 res.send(pack);
                                                 found = true;
                                             }
@@ -291,7 +332,7 @@ module.exports = function(server) {
                                     notenames = await readdir(dx, 'utf8');
                                     for (let d = notenames.length - 1; d >= 0; d--) {
                                         if (cmd[1] == notenames[d]) {
-                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'xi',
                                             { content: dx + cmd[1], options: du + 'Aes/options' });
                                             res.send(pack);
                                             found = true;
@@ -307,8 +348,24 @@ module.exports = function(server) {
                                     splicenames = await readdir(dsp, 'utf8');
                                     for (let c = splicenames.length - 1; c >= 0; c--) {
                                         if (cmd[1] == splicenames[c]) {
-                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'splice',
                                             { content: dsp + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                        { content: dd + 'notfound', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                    }
+                                    break
+                                case 'editsplice':
+                                    sfnames = await readdir(dsf, 'utf8');
+                                    for (let e = sfnames.length - 1; e >= 0; e--) {
+                                        if (cmd[1] == sfnames[e]) {
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'splice',
+                                            { content: dsf + cmd[1], options: du + 'Aes/options' });
                                             res.send(pack);
                                             found = true;
                                         }
@@ -321,17 +378,44 @@ module.exports = function(server) {
                                     break
                                 case 'get':
                                     filenames = await readdir(df, 'utf8');
-                                    for (u = 0; u < filenames.length; u++) {
-                                        if (cmd[1] == filenames[u]) {
+                                    for (let a = filenames.length - 1; a >= 0; a--) {
+                                        if (cmd[1] == filenames[a]) {
                                             res.sendFile(df + cmd[1]);
                                             found = true;
                                         }
                                     }
                                     if (!found) {
                                         documentnames = await readdir(dd, 'utf8');
-                                        for (uu = 0; uu < documentnames.length; uu++) {
-                                            if (cmd[1] == documentnames[uu]) { // str
+                                        for (b = documentnames.length - 1; b >= 0; b--) {
+                                            if (cmd[1] == documentnames[b]) { // str
                                                 res.sendFile(dd + cmd[1]);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        notenames = await readdir(dx, 'utf8');
+                                        for (c = notenames.length - 1; c >= 0; c--) {
+                                            if (cmd[1] == notenames[c]) {
+                                                res.sendFile(dx + cmd[1]);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        splicenames = await readdir(dsp, 'utf8');
+                                        for (d = splicenames.length - 1; d >= 0; d--) {
+                                            if (cmd[1] == splicenames[d]) {
+                                                res.sendFile(dsp + cmd[1]);
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                    if (!found) {
+                                        sfnames = await readdir(dsf, 'utf8');
+                                        for (e = sfnames.length - 1; e >= 0; e--) {
+                                            if (cmd[1] == sfnames[e]) {
+                                                res.sendFile(dsf + cmd[1]);
                                                 found = true;
                                             }
                                         }
@@ -375,6 +459,9 @@ module.exports = function(server) {
                                                 data = await preparedata(du + 'Aes/options', du + 'Aes/' + sreload[1], reload);
                                                 writeFile(du + 'Aes/' + req.body.f, req.body.g);
                                                 break
+                                            case 'server':
+                                                data = await preparedata(du + 'Aes/options', dsf + sreload[1], reload);
+                                                writeFile(dsf + req.body.f, req.body.g);
                                         }
                                     }
                                     data.filename = req.body.f;
@@ -418,6 +505,9 @@ module.exports = function(server) {
                                                         pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'user',
                                                         { content: du + 'Aes/' + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                         break
+                                                    case 'server':
+                                                        pack = await preparepack(cmds[u][0], cmds[u][0] + ' ' + sreload[1], sreload[1], 'server',
+                                                        { content: dsf + sreload[1], options: du + 'Aes/options', splice: dsp + cmd[1] }, pos, cmd[1]);
                                                 }
                                             }
                                         }

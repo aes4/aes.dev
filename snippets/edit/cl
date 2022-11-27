@@ -22,7 +22,7 @@
                 case 'Enter':
                     let c = cl.slice(1);
                     // check if new file?
-                    if (c[0] == 'l' || c[0] == 'w' || c[0] == 'f') {  // loop through ['l', 'w', 'f'] later
+                    if (c[0] == 'l' || c[0] == 'w' || c[0] == 'f' || (c[0] == 's' && c[1] == 'f') ) {  // loop through ['l', 'w', 'f'] later
                         if (c[0] == 'l') {
                             [fileHandle] = await window.showOpenFilePicker();
                             let localfile = await fileHandle.getFile();
@@ -41,6 +41,17 @@
                                 g.placement.y = g.found[foundindex].y;
                                 g.placement.x = g.found[foundindex].x;
                             }// else {  console log not found }
+                        }
+                        if (c[0] == 's' && c[1] == 'f') {
+                            fetch("sf", {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 'c': 'I think I have to have a body' })
+                            })
+                            .then(res => res.text())
+                            .then(data => {
+                                console.log(data);
+                            });
                         }
                     } else {
                         if (c[0] == 's') {

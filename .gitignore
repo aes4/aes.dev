@@ -8,7 +8,6 @@
 !functions.js
 !make.js
 !process.js
-!.restart.sh
 
 !users/.gitkeep
 !snippets/**
@@ -22,5 +21,8 @@
 !data/options
 !data/commands.txt
 !routes/**
+!2sf
+!sf2
 
+sf/*
 node_modules/*

@@ -8,11 +8,13 @@ editdocument,ed
 editfile,ef
 editsplice,es
 editnote,en
+editsf,esf
 view,v
 viewdocument,vd
 viewfile,vf
 viewsplice,vs
 viewnote,vn
+viewsf,vsf
 save,s
 option,o
 grab,g

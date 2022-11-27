@@ -1,0 +1,23 @@
+#!/bin/bash
+cp ~/aes.dev/sf/server.js ~/aes.dev/server.js
+cp ~/aes.dev/sf/functions.js ~/aes.dev/functions.js
+cp ~/aes.dev/sf/make.js ~/aes.dev/make.js
+cp ~/aes.dev/sf/process.js ~/aes.dev/process.js
+cp ~/aes.dev/sf/structure.txt ~/aes.dev/structure.txt
+cp ~/aes.dev/sf/routes_root.js ~/aes.dev/routes/root.js
+cp ~/aes.dev/sf/routes_post.js ~/aes.dev/routes/post.js
+cp ~/aes.dev/sf/routes_git.js ~/aes.dev/routes/git.js
+cp ~/aes.dev/sf/routes_any.js ~/aes.dev/routes/any.js
+cp ~/aes.dev/sf/routes_edit.js ~/aes.dev/routes/edit.js
+cp ~/aes.dev/sf/routes_temp.js ~/aes.dev/routes/temp.js
+#cp ~/aes.dev/sf/snippets_base ~/aes.dev/snippets/base
+cp ~/aes.dev/sf/snippets_cl ~/aes.dev/snippets/cl
+cp ~/aes.dev/sf/snippets_edit_cl ~/aes.dev/snippets/edit/cl
+cp ~/aes.dev/sf/snippets_edit_default ~/aes.dev/snippets/edit/default
+cp ~/aes.dev/sf/snippets_edit_findstart ~/aes.dev/snippets/edit/findstart
+cp ~/aes.dev/sf/snippets_edit_linenumbers ~/aes.dev/snippets/edit/linenumbers
+cp ~/aes.dev/sf/snippets_view_cl ~/aes.dev/snippets/view/cl
+cp ~/aes.dev/sf/snippets_view_default ~/aes.dev/snippets/view/default
+cp ~/aes.dev/sf/snippets_view_oldview ~/aes.dev/snippets/view/oldview
+cp ~/aes.dev/sf/2sf ~/aes.dev/2sf
+cp ~/aes.dev/sf/sf2 ~/aes.dev/sf2
