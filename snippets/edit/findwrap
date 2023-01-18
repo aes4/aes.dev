@@ -1,0 +1,74 @@
+;swap find
+    function splice(key) {
+        switch (key) {
+            case 'Enter':  // temp keybind
+                for (let i = g.splice.length - 1; i >= 0; i--) {
+                    if (g.cl().join('') == g.splice[i].slice(1, g.splice[i].length).join('')) {
+                        if (g.content.length > 1) {
+                            g.content.splice(g.placement.y - 1, 1);
+                            if (g.placement.y >= g.content.length) {
+                                g.placement.y -= 1;
+                            }
+                        } else {
+                            g.content = [[]];
+                            g.placement.x = 1;
+                        }
+                        for (let ii = i + 1; ii < g.splice.length; ii++) {
+                            if (g.splice[ii][0] == 'Ψ') {
+                                for (let u = ii; u >= i + 1; u--) {
+                                    g.content.splice(g.placement.y - 1, 0, g.splice[u]);
+                                }
+                                break
+                            } else if (ii == g.splice.length - 1) {
+                                for (let u = ii; u >= i + 1; u--) {
+                                    g.content.splice(g.placement.y - 1, 0, g.splice[u]);
+                                }
+                            }
+                        }
+                    }
+                }
+                // jumps?
+                r();
+                break
+            case 't':
+                    let c = 'note ' + g.cl().join('');
+                    fetch("post", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 'c': c } )
+                    })
+                    .then(res => res.text())
+                    .then(data => {
+                        data = JSON.parse(data);
+                        g.note = ll(data);
+                        g.content[g.placement.y - 1] = g.note[0];
+                        for (let i = g.note.length - 1; i > 0; i--) {
+                            g.content.splice(g.placement.y, 0, g.note[i]);
+                        }
+                    });
+                break
+            // move through find search
+            case 'n':
+                if (g.found.length > 0) {
+                    if (foundindex + 1 < g.found.length) {
+                        foundindex++;
+                    } else {
+                        foundindex = 0;
+                    }
+                    g.placement.y = g.found[foundindex].y;
+                    g.placement.x = g.found[foundindex].x;
+                }
+                break
+            case 'h':
+                if (g.found.length > 0) {
+                    if (foundindex > 0) {
+                        foundindex--;
+                    } else {
+                        foundindex = g.found.length - 1;
+                    }
+                    g.placement.y = g.found[foundindex].y;
+                    g.placement.x = g.found[foundindex].x;
+                }
+                break
+        }
+    }

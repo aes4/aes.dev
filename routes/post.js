@@ -225,91 +225,112 @@ module.exports = function(server) {
                                     }
                                     break
                                 case 'edit':
-                                    documentnames = await readdir(dd, 'utf8');
-                                    for (let a = documentnames.length - 1; a >= 0; a--) {
-                                        if (cmd[1] == documentnames[a]) { // str
-                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
-                                            { content: dd + cmd[1], options: du + 'Aes/options' });
-                                            res.send(pack);
-                                            found = true;
-                                        }
-                                    }
-                                    if (!found) {
-                                        filenames = await readdir(df, 'utf8');
-                                        for (let b = filenames.length - 1; b >= 0; b--) {
-                                            if (cmd[1] == filenames[b]) {
+                                    if (cmd.length > 2) {
+                                        switch (cmd[2]) {
+                                            case 'document':
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
+                                                { content: dd + cmd[1], options: du + 'Aes/options' });
+                                                break
+                                            case 'file':
                                                 pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
                                                 { content: df + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
-                                    if (!found) {
-                                        notenames = await readdir(dx, 'utf8');
-                                        for (let d = notenames.length - 1; d >= 0; d--) {
-                                            if (cmd[1] == notenames[d]) {
+                                                break
+                                            case 'xi':
                                                 pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'xi',
                                                 { content: dx + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
-                                    if (!found) {
-                                        splicenames = await readdir(dsp, 'utf8');
-                                        for (let c = splicenames.length - 1; c >= 0; c--) {
-                                            if (cmd[1] == splicenames[c]) {
+                                                break
+                                            case 'splice':
                                                 pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'splice',
                                                 { content: dsp + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
-                                    if (!found) {
-                                        sfnames = await readdir(dsf, 'utf8');
-                                        for (let e = sfnames.length - 1; e >= 0; e--) {
-                                            if (cmd[1] == sfnames[e]) {
+                                                break
+                                            case 'user':
+                                                if (cmd[1] == 'options') {
+                                                    pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
+                                                    { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
+                                                }
+                                                if (cmd[1] == 'commands.txt') {
+                                                    pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
+                                                    { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
+                                                }
+                                                break
+                                            case 'server':
                                                 pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'server',
                                                 { content: dsf + cmd[1], options: du + 'Aes/options' });
+                                            default:
+                                                res.end();
+                                        }
+                                        res.send(pack);
+                                    } else {
+                                        documentnames = await readdir(dd, 'utf8');
+                                        for (let a = documentnames.length - 1; a >= 0; a--) {
+                                            if (cmd[1] == documentnames[a]) { // str
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
+                                                { content: dd + cmd[1], options: du + 'Aes/options' });
                                                 res.send(pack);
                                                 found = true;
                                             }
                                         }
-                                    }
-                                    if (cmd[1] == 'options' && !found) {
-                                        pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
-                                        { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
-                                        res.send(pack);
-                                        found = true;
-                                    }
-                                    if (cmd[1] == 'commands.txt' && !found) {
-                                        pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
-                                        { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
-                                        res.send(pack);
-                                        found = true;
-                                    }
-                                    if (!found) {
-                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
-                                        { content: dd + 'notfound', options: du + 'Aes/options' });
-                                        res.send(pack);
-                                    }
-                                    break
-                                case 'editdocument':
-                                    documentnames = await readdir(dd, 'utf8');
-                                    for (let a = documentnames.length - 1; a >= 0; a--) {
-                                        if (cmd[1] == documentnames[a]) { // str
-                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
-                                            { content: dd + cmd[1], options: du + 'Aes/options' });
+                                        if (!found) {
+                                            filenames = await readdir(df, 'utf8');
+                                            for (let b = filenames.length - 1; b >= 0; b--) {
+                                                if (cmd[1] == filenames[b]) {
+                                                    pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                    { content: df + cmd[1], options: du + 'Aes/options' });
+                                                    res.send(pack);
+                                                    found = true;
+                                                }
+                                            }
+                                        }
+                                        if (!found) {
+                                            notenames = await readdir(dx, 'utf8');
+                                            for (let d = notenames.length - 1; d >= 0; d--) {
+                                                if (cmd[1] == notenames[d]) {
+                                                    pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'xi',
+                                                    { content: dx + cmd[1], options: du + 'Aes/options' });
+                                                    res.send(pack);
+                                                    found = true;
+                                                }
+                                            }
+                                        }
+                                        if (!found) {
+                                            splicenames = await readdir(dsp, 'utf8');
+                                            for (let c = splicenames.length - 1; c >= 0; c--) {
+                                                if (cmd[1] == splicenames[c]) {
+                                                    pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'splice',
+                                                    { content: dsp + cmd[1], options: du + 'Aes/options' });
+                                                    res.send(pack);
+                                                    found = true;
+                                                }
+                                            }
+                                        }
+                                        if (!found) {
+                                            sfnames = await readdir(dsf, 'utf8');
+                                            for (let e = sfnames.length - 1; e >= 0; e--) {
+                                                if (cmd[1] == sfnames[e]) {
+                                                    pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'server',
+                                                    { content: dsf + cmd[1], options: du + 'Aes/options' });
+                                                    res.send(pack);
+                                                    found = true;
+                                                }
+                                            }
+                                        }
+                                        if (cmd[1] == 'options' && !found) {
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
+                                            { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
                                             res.send(pack);
                                             found = true;
                                         }
-                                    }
-                                    if (!found) {
-                                        pack = await preparepack('view', 'view notfound', 'notfound', 'document',
-                                        { content: dd + 'notfound', options: du + 'Aes/options' });
-                                        res.send(pack);
+                                        if (cmd[1] == 'commands.txt' && !found) {
+                                            pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'user',
+                                            { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
+                                            res.send(pack);
+                                            found = true;
+                                        }
+                                        if (!found) {
+                                            pack = await preparepack('view', 'view notfound', 'notfound', 'document',
+                                            { content: dd + 'notfound', options: du + 'Aes/options' });
+                                            res.send(pack);
+                                        }
                                     }
                                     break
                                 case 'editfile':
@@ -513,6 +534,70 @@ module.exports = function(server) {
                                         }
                                     }
                                     res.send(pack);
+                                    break
+                                case 'note':
+                                    let nns = await readdir(dx, 'utf8');  // nns = notenames
+                                    for (let a = nns.length - 1; a >= 0; a--) {
+                                        if (cmd[1] == nns[a]) {
+                                            let note = await readFile(dx + cmd[1], 'utf8');
+                                            note = note.split(`\n`);
+                                            note.pop();
+                                            let newnote = [];
+                                            switch (cmd.length) {
+                                                case 4:
+                                                    for (let b = 0; b < note.length; b++) {
+                                                        if (note[b].length > 0 && note[b][0] == 'Ξ') {
+                                                            if (note[b].slice(1, note[b].length) == cmd[2] + ' ' + cmd[3]) {
+                                                                for (let c = b + 1; c < note.length; c++) {
+                                                                    if (note[c].length > 0 && note[c][0] != 'Ξ') {
+                                                                        newnote.push(note[c]);
+                                                                    }
+                                                                    if (note[c].length > 0 && note[c][0] == 'Ξ') {
+                                                                        break
+                                                                    }
+                                                                    if (note[c].length == 0) {
+                                                                        newnote.push('');
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (newnote.length == 0) { newnote = ['could not find section'] }
+                                                    newnote = JSON.stringify(newnote);
+                                                    res.send(newnote);
+                                                    break
+                                                case 3:
+                                                    for (let b = 0; b < note.length; b++) {
+                                                        if (note[b].length > 0 && note[b][0] == 'Ξ') {
+                                                            if (note[b].slice(1, note[b].length) == cmd[2]) {
+                                                                for (let c = b + 1; c < note.length; c++) {
+                                                                    if (note[c].length > 0 && note[c][0] != 'Ξ') {
+                                                                        newnote.push(note[c]);
+                                                                    }
+                                                                    if (note[c].length > 0 && note[c][0] == 'Ξ') {
+                                                                        break
+                                                                    }
+                                                                    if (note[c].length == 0) {
+                                                                        newnote.push('');
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (newnote.length == 0) { newnote = ['could not find section'] }
+                                                    newnote = JSON.stringify(newnote);
+                                                    res.send(newnote);
+                                                    break
+                                                default:
+                                                    note = JSON.stringify(note);
+                                                    res.send(note);
+                                            }
+                                            found = true;
+                                        }
+                                    }
+                                    if (!found) {
+                                        res.send(JSON.stringify(['could not find note']));
+                                    }
                                     break
                                 default:
                                     pack = await preparepack('view', 'view commandnotimplemented', 'commandnotimplemented', 'document',

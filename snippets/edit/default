@@ -243,6 +243,9 @@
     }
     function modeless(key) {
         switch (key) {
+            case 'Escape':
+                g.mode = 'normal'
+                break
             case 'Tab':
                 event.preventDefault();
                 break
@@ -254,7 +257,6 @@
                 break
             case 'Escape':
                 g.splacements = [];
-                g.mode = 'normal';
                 break
             case 'o':
                 [g.placement, g.spoint] = [g.spoint, g.splacement];
@@ -505,9 +507,6 @@
                     }
                 }
                 break
-            case 'Escape':
-                g.mode = 'normal';
-                break
             case 'Meta':
                 break
             case 'Alt':
@@ -726,9 +725,6 @@
     */
     function splice(key) {
         switch (key) {
-            case 'Escape':
-                g.mode = 'normal';
-                break
             case 'Enter':  // temp keybind
                 for (let i = g.splice.length - 1; i >= 0; i--) {
                     if (g.cl().join('') == g.splice[i].slice(1, g.splice[i].length).join('')) {
@@ -759,8 +755,8 @@
                 r();
                 break
             case 't':
-                    let c = g.cl().join('').split(' ')[0];
-                    fetch("temp", {
+                    let c = 'note ' + g.cl().join('');
+                    fetch("post", {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ 'c': c } )
@@ -807,8 +803,6 @@
             case 'Control':
                 break
             case 'Backspace':
-                break
-            case 'Escape':
                 break
             case 'Meta':
                 break

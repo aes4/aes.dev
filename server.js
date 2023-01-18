@@ -19,6 +19,5 @@ server.get('/favicon.ico', function (req, res) { res.sendFile(__dirname + '/file
 
 //require(__dirname + '/routes/edit.js')(server);
 require(__dirname + '/routes/any.js')(server);
-require(__dirname + '/routes/temp.js')(server);  // super temp delete later, figure out something better
 
 server.listen(12345);
