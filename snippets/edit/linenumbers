@@ -25,14 +25,7 @@
                 if (g.placement.x - 1 == ii && g.placement.y - 1 == i) {
                     let x = (ii * charspacing) + (textborder + textborderx) + linenumbersx;
                     let y = (p * (charvrange + linespacing)) + (textborder + textbordery);
-                    line(x, y, x + cursorlength, y);
-                    line(x, y, x, y + cursorlength);
-                    line(x + charspacing, y, x + charspacing - cursorlength, y);
-                    line(x + charspacing, y, x + charspacing, y + cursorlength);
-                    line(x, y + charvrange, x + cursorlength, y + charvrange);
-                    line(x, y + charvrange, x, y + charvrange - cursorlength);
-                    line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
-                    line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
+                    selectlines(x, y);
                 }
             } else {  // same as ii == g.content[i].length
                 if (g.placement.x - 1 == ii && g.placement.y - 1 == i) {
@@ -54,23 +47,35 @@
     }
 ;swap vsd
     function vsd(i, p) {  // visual splacements display
+        c.lineWidth = 1;
+        c.beginPath;
         for (let ii = 1; ii <= g.content[i - 1].length + 1; ii++) {
             // go past the line with 'newline' in splacements?
             for (let q = 0; q < g.splacements.length; q++) {
                 if (g.splacements[q].y == i && g.splacements[q].x == ii) {
                     let x = ((ii - 1) * charspacing) + (textborder + textborderx) + linenumbersx;
                     let y = ((p - 1) * (charvrange + linespacing)) + (textborder + textbordery);
-                    line(x, y, x + cursorlength, y);
-                    line(x, y, x, y + cursorlength);
-                    line(x + charspacing, y, x + charspacing - cursorlength, y);
-                    line(x + charspacing, y, x + charspacing, y + cursorlength);
-                    line(x, y + charvrange, x + cursorlength, y + charvrange);
-                    line(x, y + charvrange, x, y + charvrange - cursorlength);
-                    line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
-                    line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
+                    c.moveTo(x, y);
+                    c.lineTo(x + cursorlength, y);
+                    c.moveTo(x, y);
+                    c.lineTo(x, y + cursorlength);
+                    c.moveTo(x + charspacing, y);
+                    c.lineTo(x + charspacing - cursorlength, y);
+                    c.moveTo(x + charspacing, y);
+                    c.lineTo(x + charspacing, y + cursorlength);
+                    c.moveTo(x, y + charvrange);
+                    c.lineTo(x + cursorlength, y + charvrange);
+                    c.moveTo(x, y + charvrange);
+                    c.lineTo(x, y + charvrange - cursorlength);
+                    c.moveTo(x + charspacing, y + charvrange);
+                    c.lineTo(x + charspacing - cursorlength, y + charvrange);
+                    c.moveTo(x + charspacing, y + charvrange);
+                    c.lineTo(x + charspacing, y + charvrange - cursorlength);
                 }
             }
         }
+        c.strokeStyle = cursorcolor;
+        c.stroke();
     }
 ;swap main
     function main() {

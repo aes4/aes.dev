@@ -31,12 +31,35 @@
     const symbols = [" ", "~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "{", "}", "[", "]", "|", "\\", ";", ":", '"', "'", "<", ">", ",", ".", "?", "/"];
     let arr = [];  // :(
     let p = 0;  // used as y position
+    const cursorcolor = "<%- cursorcolor %>";
 ;function
-    function line(x, y, xx, yy, color="<%- cursorcolor %>") {
+    function line(x, y, xx, yy, color=cursorcolor) {
         c.lineWidth = 1;
         c.beginPath;
         c.moveTo(x, y);
         c.lineTo(xx, yy);
+        c.strokeStyle = color;
+        c.stroke();
+    }
+    function selectlines(x, y, color=cursorcolor) {
+        c.lineWidth = 1;
+        c.beginPath;
+        c.moveTo(x, y);
+        c.lineTo(x + cursorlength, y);
+        c.moveTo(x, y);
+        c.lineTo(x, y + cursorlength);
+        c.moveTo(x + charspacing, y);
+        c.lineTo(x + charspacing - cursorlength, y);
+        c.moveTo(x + charspacing, y);
+        c.lineTo(x + charspacing, y + cursorlength);
+        c.moveTo(x, y + charvrange);
+        c.lineTo(x + cursorlength, y + charvrange);
+        c.moveTo(x, y + charvrange);
+        c.lineTo(x, y + charvrange - cursorlength);
+        c.moveTo(x + charspacing, y + charvrange);
+        c.lineTo(x + charspacing - cursorlength, y + charvrange);
+        c.moveTo(x + charspacing, y + charvrange);
+        c.lineTo(x + charspacing, y + charvrange - cursorlength);
         c.strokeStyle = color;
         c.stroke();
     }
@@ -72,14 +95,7 @@
                 if (g.placement.x - 1 == ii && g.placement.y - 1 == i) {
                     let x = (ii * charspacing) + (textborder + textborderx);
                     let y = (p * (charvrange + linespacing)) + (textborder + textbordery);
-                    line(x, y, x + cursorlength, y);
-                    line(x, y, x, y + cursorlength);
-                    line(x + charspacing, y, x + charspacing - cursorlength, y);
-                    line(x + charspacing, y, x + charspacing, y + cursorlength);
-                    line(x, y + charvrange, x + cursorlength, y + charvrange);
-                    line(x, y + charvrange, x, y + charvrange - cursorlength);
-                    line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
-                    line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
+                    selectlines(x, y);
                 }
             } else {  // same as ii == g.content[i].length
                 if (g.placement.x - 1 == ii && g.placement.y - 1 == i) {
@@ -100,23 +116,35 @@
         }
     }
     function vsd(i, p) {  // visual splacements display
+        c.lineWidth = 1;
+        c.beginPath;
         for (let ii = 1; ii <= g.content[i - 1].length + 1; ii++) {
             // go past the line with 'newline' in splacements?
             for (let q = 0; q < g.splacements.length; q++) {
                 if (g.splacements[q].y == i && g.splacements[q].x == ii) {
                     let x = ((ii - 1) * charspacing) + (textborder + textborderx);
                     let y = ((p - 1) * (charvrange + linespacing)) + (textborder + textbordery);
-                    line(x, y, x + cursorlength, y);
-                    line(x, y, x, y + cursorlength);
-                    line(x + charspacing, y, x + charspacing - cursorlength, y);
-                    line(x + charspacing, y, x + charspacing, y + cursorlength);
-                    line(x, y + charvrange, x + cursorlength, y + charvrange);
-                    line(x, y + charvrange, x, y + charvrange - cursorlength);
-                    line(x + charspacing, y + charvrange, x + charspacing - cursorlength, y + charvrange);
-                    line(x + charspacing, y + charvrange, x + charspacing, y + charvrange - cursorlength);
+                    c.moveTo(x, y);
+                    c.lineTo(x + cursorlength, y);
+                    c.moveTo(x, y);
+                    c.lineTo(x, y + cursorlength);
+                    c.moveTo(x + charspacing, y);
+                    c.lineTo(x + charspacing - cursorlength, y);
+                    c.moveTo(x + charspacing, y);
+                    c.lineTo(x + charspacing, y + cursorlength);
+                    c.moveTo(x, y + charvrange);
+                    c.lineTo(x + cursorlength, y + charvrange);
+                    c.moveTo(x, y + charvrange);
+                    c.lineTo(x, y + charvrange - cursorlength);
+                    c.moveTo(x + charspacing, y + charvrange);
+                    c.lineTo(x + charspacing - cursorlength, y + charvrange);
+                    c.moveTo(x + charspacing, y + charvrange);
+                    c.lineTo(x + charspacing, y + charvrange - cursorlength);
                 }
             }
         }
+        c.strokeStyle = cursorcolor;
+        c.stroke();
     }
     function find(str) {
         let line, index;
@@ -222,24 +250,23 @@
             }
         }
     }
-    function delsel() {  // delete selected note: really broken
+    function visualinesp() {  // visualineselectedplacements
+        g.splacements = [];
+        if (g.placement.y < g.spoint.y) {
+        } else if (g.spoint.y < g.placement.y) {
+        } else {  // same as else if ( g.placement.y == g.spoint.y) {
+            for (let ix = 1; ix <= g.content[g.placement.y - 1].length; ix++) {
+                g.splacements.push({ x: ix, y: g.placement.y });
+            }
+            // select line at pos
+        }
+    }
+    function delsel() {  // maybe make it so extra empty lines get deleted
         visualsp()
         for (let s = g.splacements.length - 1; s >= 0; s--) {
             g.content[g.splacements[s].y - 1].splice(g.splacements[s].x - 1, 1);
         }
-        /*
-        for (let s = 0; s < g.splacements.length; s++) {
-            g.content[g.splacements[s].y - 1].splice(g.splacements[s].x - 1, 1, "zero");
-        }
-        for (let dsy = 0; dsy < g.content.length; dsy++) {
-            for (let dsx = 0; dsx < g.content[dsy].length; dsx++) {
-                if (g.content[dsy][dsx] == "zero") {
-                    g.content[dsy].splice(dsx, 1);
-                    dsx--;
-                }
-            }
-        }
-        */
+        g.placement = g.splacements[0];
     }
     function modeless(key) {
         switch (key) {
@@ -259,7 +286,7 @@
                 g.splacements = [];
                 break
             case 'o':
-                [g.placement, g.spoint] = [g.spoint, g.splacement];
+                [g.placement, g.spoint] = [g.spoint, g.placement];
                 break
         }
     }
@@ -273,8 +300,8 @@
                 break
             case 'V':
                 g.spoint = { x: g.placement.x, y: g.placement.y };
-                for (let i = 1; i <= g.eol(); i++) {
-                    g.splacements.push({ x: i, y: g.placement.y });
+                for (let ix = 1; ix <= g.content[g.placement.y - 1].length; ix++) {
+                    g.splacements.push({ x: ix, y: g.placement.y });
                 }
                 g.mode = 'visualine';
                 break
@@ -308,8 +335,9 @@
                         g.content.splice(g.placement.y, 0, c[i]);
                     }
                 } else {  // paste single line section after cursor
+                    console.log(c);
                     for (let i = c[0].length - 1; i >= 0; i--) {
-                        g.cl().splice(g.placement.x, 0, c[0][1]);
+                        g.cl().splice(g.placement.x, 0, c[0][i]);
                     }
                 }
                 r();
@@ -528,7 +556,6 @@
         }
     }
     async function visual(key) {
-        visualsp();
         switch(key) {
             case 'v':
                 g.splacements = [];
@@ -537,8 +564,8 @@
             case 'V':
                 g.splacements = [];
                 g.spoint = { x: g.placement.x, y: g.placement.y };
-                for (let i = 1; i <= g.eol(); i++) {
-                    g.splacements.push({ x: i, y: g.placement.y });
+                for (let ix = 1; ix <= g.content[g.placement.y - 1].length; ix++) {
+                    g.splacements.push({ x: ix, y: g.placement.y });
                 }
                 g.mode = 'visualine';
                 break
@@ -552,6 +579,7 @@
                 g.mode = 'insert';
                 break
             case 'y':  // temp to make work press 'o'
+                visualsp();
                 let str = '';
                 let currenty = g.splacements[0].y - 1;
                 for (let i = 0; i < g.splacements.length; i++) {
@@ -609,17 +637,21 @@
                 break
             case 'h':  // move left
                 if (g.placement.x > 1) { g.placement.x -= 1; }
+                visualsp();
                 break
             case 'c':  // move up
                 if (g.placement.y > 1) { g.placement.y -= 1; }
                 resetx();
+                visualsp();
                 break
             case 't':  // move down
                 if (g.placement.y < g.content.length) { g.placement.y += 1; }
                 resetx();
+                visualsp();
                 break
             case 'n':  // move left
                 if (g.placement.x < g.eol()) { g.placement.x += 1; }
+                visualsp();
                 break
             case 'H':  // move left
                 if (prev(('dCapsLock'))) {
@@ -628,14 +660,17 @@
                 }
                 if (g.placement.x > 1) { g.placement.x = 1; }
                 resetx();
+                visualsp();
                 break
             case 'C':  // move up
                 if (g.placement.y > 1) { g.placement.y = 1; }
                 resetx();
+                visualsp();
                 break
             case 'T':  // move down
                 if (g.placement.y < g.content.length) { g.placement.y = g.content.length; }
                 resetx();
+                visualsp();
                 break
             case 'N':  // move left
                 if (prev('dCapsLock')) {
@@ -644,6 +679,93 @@
                 } else {
                     if (g.placement.x < g.eol()) { g.placement.x = g.eol(); }
                 }
+                visualsp();
+                break
+            // note for next 4 cases can be improved with checks but is useable
+            case ',':  // move back a word to the start of a word
+                arr = wsf();
+                for (let i = 0; i < arr.length; i++) {
+                    for (let u = 0; u < arr[i].x.length; u++) {
+                        if (g.placement.x == arr[i].x[u]) {
+                            // maybe a check here if we are at last word to go to start of last word
+                            if (arr[i].ws) {
+                                if (i - 2 >= 0) {
+                                    g.placement.x = arr[i - 2].x[0];
+                                }
+                            } else {
+                                if (i - 1 >= 0) {
+                                    g.placement.x = arr[i - 1].x[0];
+                                }
+                            }
+                        }
+                    }
+                }
+                visualsp();
+                break
+            case '.':  // move back a word to the end of a word
+                arr = wsf();
+                for (let i = 0; i < arr.length; i++) {
+                    for (let u = arr[i].x.length - 1; u >= 0; u--) {
+                        if (g.placement.x == arr[i].x[u]) {
+                            if (arr[i].ws) {
+                                if (i - 2 >= 0) {
+                                    g.placement.x = arr[i - 2].x[arr[i - 2].x.length - 1];
+                                }
+                            } else {
+                                if (i - 1 >= 0) {
+                                    g.placement.x = arr[i - 1].x[arr[i - 1].x.length - 1];
+                                }
+                            }
+                        }
+                    }
+                }
+                visualsp();
+                break
+            case 'm':  // move forward a word to the start of a word
+                arr = wsf();
+                for (let i = arr.length - 1; i >= 0; i--) {
+                    for (let u = arr[i].x.length - 1; u >= 0; u--) {
+                        if (g.placement.x == arr[i].x[u]) {
+                            if (arr[i].ws) {
+                                if (i + 2 < arr.length) {
+                                    g.placement.x = arr[i + 2].x[0];
+                                }
+                            } else {
+                                if (i + 1 < arr.length) {
+                                    g.placement.x = arr[i + 1].x[0];
+                                }
+                            }
+                        }
+                    }
+                }
+                visualsp();
+                break
+            case 'z':  // move forward a word to end of a word
+                arr = wsf();
+                for (let i = arr.length - 1; i >= 0; i--) {
+                    for (let u = arr[i].x.length - 1; u >= 0; u--) {
+                        if (g.placement.x == arr[i].x[u]) {
+                            if (arr[i].ws) {
+                                if (i + 2 < arr.length) {
+                                    g.placement.x = arr[i + 2].x[arr[i + 2].x.length - 1];
+                                }
+                            } else {
+                                if (i + 1 < arr.length) {
+                                    g.placement.x = arr[i + 1].x[arr[i + 1].x.length - 1];
+                                }
+                            }
+                        }
+                    }
+                }
+                visualsp();
+                break
+            case 's':
+                g.placement.x = Math.round(g.cll() / 2);
+                visualsp();
+                break
+            case 'S':
+                g.placement.y = Math.round(g.content.length / 2);
+                visualsp();
                 break
             case 'd':
                 delsel();
@@ -665,7 +787,6 @@
                 break
             case 'x':  // delete character
                 delsel();
-                g.cl().splice(g.placement.x - 1, 1);
                 if (g.placement.x == g.eol()) { g.placement.x -= 1; }
                 break
             case 'r':
@@ -676,6 +797,7 @@
                     if (Number(g.count) > g.content.length) { g.placement.y = g.content.length }
                 }
                 g.count = '';
+                visualsp();
                 break
             case '>':
                 var indenttoggle = true;
@@ -691,6 +813,7 @@
                     }
                     indenttoggle = true;
                 }
+                visualsp();
                 break
             case '<':
                 var indenttoggle = true;
@@ -706,9 +829,9 @@
                     }
                     indenttoggle = true;
                 }
+                visualsp();
                 break
         }
-        visualsp();
     }
     function visualine(key) {
         switch (key) {
@@ -923,7 +1046,7 @@
 ;mainfunctions
     function main() {
         switch (g.mode) {
-            case 'visual':
+            case 'visual' || 'visualine':
                 p = 0;
                 if (slack < g.placement.y && g.placement.y < g.content.length - slack) {
                     for (let i = g.placement.y - slack; i < (g.placement.y + lines) - slack; i++) {
