@@ -331,13 +331,29 @@
                 let newline = c.includes("\n");
                 c = strtoarr(c);
                 if (newline) {
-                    for (let i = 0; i < c.length; i++) {
-                        g.content.splice(g.placement.y, 0, c[i]);
+                    if (g.placement.x == g.eol()) {
+                        for (let i = c.length - 1; i >= 0; i--) {
+                            g.content.splice(g.placement.y, 0, c[i]);
+                        }
+                    } else if (g.placement.x == 1) {
+                        for (let i = c.length - 1; i >= 0; i--) {
+                            g.content.splice(g.placement.y - 1, 0, c[i]);
+                        }
+                    } else {
+                        g.content.splice(g.placement.y - 1, 0, g.cl().splice(0, g.placement.x - 1));
+                        for (let i = c.length - 1; i >= 0; i--) {
+                            if (i == c.length - 1) {
+                                for (let ii = c[0].length - 1; ii >= 0; ii--) {
+                                    g.content[g.placement.y - 1].splice(g.placement.x - 1, 0, c[0][ii]);
+                                }
+                            } else {
+                                g.content.splice(g.placement.y, 0, c[i]);
+                            }
+                        }
                     }
-                } else {  // paste single line section after cursor
-                    console.log(c);
+                } else {
                     for (let i = c[0].length - 1; i >= 0; i--) {
-                        g.cl().splice(g.placement.x, 0, c[0][i]);
+                        g.content[g.placement.y - 1].splice(g.placement.x - 1, 0, c[0][i]);
                     }
                 }
                 r();
@@ -581,55 +597,43 @@
             case 'y':  // temp to make work press 'o'
                 visualsp();
                 let str = '';
-                let currenty = g.splacements[0].y - 1;
                 for (let i = 0; i < g.splacements.length; i++) {
-                    if (g.splacements[i].y - 1 != currenty) {
-                        str += "\n";
-                        currenty = g.splacements[i].y - 1;
-                    }
-                    /* can't decide which to go with
-                    if (g.splacements[i].x != g.eol()) {
-                        str += g.content[g.splacements[i].y - 1][g.splacements[i].x - 1];
-                    } else { str += "\n"; }
-                    */
                     str += g.content[g.splacements[i].y - 1][g.splacements[i].x - 1];
-                    if (g.splacements[i].x == g.eol()) {
-                        str = str.slice(0, -9);
+                    if (g.splacements[i].x == g.content[g.splacements[i].y - 1].length) {
                         str += "\n";
                     }
                 }
                 navigator.clipboard.writeText(str);
                 break
-            case 'p':  // delete and paste at cursor
-                // broken normal mode paste works for now
+            case 'p':  // delete and paste at cursor, I think I planned to do diff here but can't remember
                 delsel();
                 let c = await navigator.clipboard.readText();
-                let multiline = c.includes("\n");
+                let newline = c.includes("\n");
                 c = strtoarr(c);
-                if (multiline) {  // might be single line or multiline aswell
-                    if (g.eol() > g.placement.x) {
-                        // let temp = st
-                        // splice or slice will return what was taken out
-                    }
-                    // check if there is stuff after cursor ex: te[]st
-                    // let temp = st
-                    // for lines in paste push in current line or insert in newline
-                    // insert st
-                    /*
-                    console.log(c);
-                    // insert first line into cl at xpos
-                    // change x pos to increase ot width of inserted text tot split
-                    g.content.splice(g.placement.y - 1, 0, g.cl().splice(0, g.placement.x - 1));  // reusing split arr
-                    // if more lines in c for loop to insert them after cl (backwards?)
-                    if (c.length > 1) {
-                        for (let i = c.length(-1?); i >= 0; i--) {
-                            // insert c[i] into next line
+                if (newline) {
+                    if (g.placement.x == g.eol()) {
+                        for (let i = c.length - 1; i >= 0; i--) {
+                            g.content.splice(g.placement.y, 0, c[i]);
+                        }
+                    } else if (g.placement.x == 1) {
+                        for (let i = c.length - 1; i >= 0; i--) {
+                            g.content.splice(g.placement.y - 1, 0, c[i]);
+                        }
+                    } else {
+                        g.content.splice(g.placement.y - 1, 0, g.cl().splice(0, g.placement.x - 1));
+                        for (let i = c.length - 1; i >= 0; i--) {
+                            if (i == c.length - 1) {
+                                for (let ii = c[0].length - 1; ii >= 0; ii--) {
+                                    g.content[g.placement.y - 1].splice(g.placement.x - 1, 0, c[0][ii]);
+                                }
+                            } else {
+                                g.content.splice(g.placement.y, 0, c[i]);
+                            }
                         }
                     }
-                    */
-                } else {  // single line
+                } else {
                     for (let i = c[0].length - 1; i >= 0; i--) {
-                        g.cl().splice(g.placement.x - 1, 0, c[0][i]);
+                        g.content[g.placement.y - 1].splice(g.placement.x - 1, 0, c[0][i]);
                     }
                 }
                 g.mode = 'normal';
