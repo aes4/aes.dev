@@ -3,7 +3,8 @@ var exec = require('child_process').exec;
 module.exports = function(server) {
     server.post('/git', function (req, res) {
         res.sendStatus(200);
-        exec('git -C ~/aes.dev pull', callback);
+        exec('cd ~/aes.dev; git pull', callback);
+        //exec('git -C ~/aes.dev pull', callback);
         process.exit();
     });
 }

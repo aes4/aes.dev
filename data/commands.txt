@@ -9,6 +9,12 @@ editfile,ef
 editsplice,es
 editnote,en
 editsf,esf
+editnew,enew
+editnewdocument,enewd
+editnewfile,enewf
+editnewsplice,enews
+editnewnote,enewn
+editnewsf,enewsf
 view,v
 viewdocument,vd
 viewfile,vf

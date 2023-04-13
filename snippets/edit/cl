@@ -24,7 +24,14 @@
                     // check if new file?
                     if (c[0] == 'l' || c[0] == 'w' || c[0] == 'f' || (c[0] == 's' && c[1] == 'f') ) {  // loop through ['l', 'w', 'f'] later
                         if (c[0] == 'l') {
-                            [fileHandle] = await window.showOpenFilePicker();
+                            let tem = c.split(' ');
+                            let te;
+                            if (tem.length > 1) {
+                                te = tem.slice(1).join(" ")
+                                [fileHandle] = await window.showOpenFilePicker();
+                            } else {
+                                [fileHandle] = await window.showOpenFilePicker();
+                            }
                             let localfile = await fileHandle.getFile();
                             let temp = await localfile.text();
                             g.content = strtoarr(temp);
