@@ -17,6 +17,18 @@ const da = '/home/ubuntu/aes.dev/data/';
 const dr = '/home/ubuntu/aes.dev/routes/';
 const dsf = '/home/ubuntu/aes.dev/sf/';
 
+async function idk(dp, info, stype) {
+    n = await readdir(dp, 'utf8'); // ar
+    for (let i = n.length - 1; i >= 0; i--) {
+        if (info == n[i]) { // str
+            pack = await preparepack('view', 'view ' + info, info, stype,
+            { content: dp + cmd[1], options: du + 'Aes/options' });
+            res.send(pack);
+            return true;
+        }
+    }
+}
+
 module.exports = function(server) {
     server.post('/post', async function (req, res) {
         let data, reload, documentnames;
@@ -73,59 +85,11 @@ module.exports = function(server) {
                                     // return content
                                     break
                                 case 'view':
-                                    documentnames = await readdir(dd, 'utf8'); // ar
-                                    for (let a = documentnames.length - 1; a >= 0; a--) {
-                                        if (cmd[1] == documentnames[a]) { // str
-                                            pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'document',
-                                            { content: dd + cmd[1], options: du + 'Aes/options' });
-                                            res.send(pack);
-                                            found = true;
-                                        }
-                                    }
-                                    if (!found) {
-                                        filenames = await readdir(df, 'utf8');
-                                        for (let b = filenames.length - 1; b >= 0; b--) {
-                                            if (cmd[1] == filenames[b]) {
-                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'file',
-                                                { content: df + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
-                                    if (!found) {
-                                        splicenames = await readdir(dsp, 'utf8');
-                                        for (let c = splicenames.length - 1; c >= 0; c--) {
-                                            if (cmd[1] == splicenames[c]) {
-                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'splice',
-                                                { content: dsp + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
-                                    if (!found) {
-                                        notenames = await readdir(dx, 'utf8');
-                                        for (let d = notenames.length - 1; d >= 0; d--) {
-                                            if (cmd[1] == notenames[d]) {
-                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'xi',
-                                                { content: dx + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
-                                    if (!found) {
-                                        sfnames = await readdir(dsf, 'utf8');
-                                        for (let e = sfnames.length -1; e >= 0; e--) {
-                                            if (cmd[1] == sfnames[e]) {
-                                                pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'server',
-                                                { content: dsf + cmd[1], options: du + 'Aes/options' });
-                                                res.send(pack);
-                                                found = true;
-                                            }
-                                        }
-                                    }
+                                    if !(typeof await fview(dd, cmd[1], 'document') === 'undefined') { found = true; }
+                                    if !(typeof await fview(df, cmd[1], 'file') === 'undefined') { found = true; }
+                                    if !(typeof await fview(dsp, cmd[1], 'splice') === 'undefined') { found = true; }
+                                    if !(typeof await fview(dx, cmd[1], 'xi') === 'undefined') { found = true; }
+                                    if !(typeof await fview(dsf, cmd[1], 'server') === 'undefined') { found = true; }
                                     if (cmd[1] == 'options' && !found) {
                                         pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'user',
                                         { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
@@ -397,6 +361,45 @@ module.exports = function(server) {
                                         res.send(pack);
                                     }
                                     break
+                                /*
+                                case 'editnew':
+                                    if (cmd.length > 2) { // editnew name doc?
+                                        switch (cmd[2]) {
+                                            case 'document':
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',
+                                                { content: dd + 'placeholder', options: du + 'Aes/options' });
+                                                break
+                                            case 'file':
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'file',
+                                                { content: dd + 'placeholder', options: du + 'Aes/options' });
+                                                break
+                                            case 'xi':
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'xi',
+                                                { content: dd + 'placeholder', options: du + 'Aes/options' });
+                                                break
+                                            case 'splice':
+                                                pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'splice',
+                                                { content: dd + 'placeholder', options: du + 'Aes/options' });
+                                                break
+                                            default:
+                                                res.end();
+                                        }
+                                        res.send(pack);
+                                    } else {  // instead of the rest of this we do default type not found does not apply
+                                        pack = await preparepack('edit', 'edit ' + cmd[1], cmd[1], 'document',  //{default type here}
+                                        { content: dd + 'placeholder', options: du + 'Aes/options' });
+                                        res.send(pack);
+                                        ^ might already have info of option default type i need
+                                        or might have to read it from file
+                                        have to look to see if I got and used a option somewhere else
+                                    break
+                                case 'editnewdocument':
+                                case 'editnewfile':
+                                case 'editnewnote':
+                                case 'editnewsplice':
+                                case 'editnewsf':
+                                case 'editnewdocument':
+                                */
                                 case 'get':
                                     filenames = await readdir(df, 'utf8');
                                     for (let a = filenames.length - 1; a >= 0; a--) {
