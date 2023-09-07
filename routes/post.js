@@ -19,7 +19,7 @@ const dr = '/home/ubuntu/aes.dev/routes/';
 const dsf = '/home/ubuntu/aes.dev/sf/';
 
 AWS.config.update({ region: 'us-west-1' });
-const s3 new AWS.S3({ apiVersion: '2006-03-01' });
+const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
 const up = process.env.ENABLE_S3_UPLOAD ? process.env.ENABLE_S3_UPLOAD === 'true' : false;
 const bn = 'raw-aes-dev';
 
