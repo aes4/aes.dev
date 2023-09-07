@@ -509,7 +509,7 @@ module.exports = function(server) {
                                         if (up) {
                                             const upparams = {
                                                 Bucket: bn,
-                                                Key, req.body.f,
+                                                Key: req.body.f,
                                                 Body: req.body.g,
                                             }
                                             s3.upload(upparams, (err, data) => {
