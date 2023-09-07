@@ -1,6 +1,7 @@
 var ejs;
 const {readFile, writeFile, readdir} = require('fs').promises;
 const {preparepack, preparedata, rs, s, j} = require("../functions.js");
+const AWS = require('aws-sdk');
 
 ejs = require("ejs");
 m = require("../make.js");
@@ -16,6 +17,11 @@ const dsp = '/home/ubuntu/aes.dev/splices/';
 const da = '/home/ubuntu/aes.dev/data/';
 const dr = '/home/ubuntu/aes.dev/routes/';
 const dsf = '/home/ubuntu/aes.dev/sf/';
+
+AWS.config.update({ region: 'us-west-1' });
+const s3 new AWS.S3({ apiVersion: '2006-03-01' });
+const up = process.env.ENABLE_S3_UPLOAD ? process.env.ENABLE_S3_UPLOAD === 'true' : false;
+const bn = 'raw-aes-dev';
 
 async function idk(dp, info, stype) {
     n = await readdir(dp, 'utf8'); // ar
@@ -85,11 +91,11 @@ module.exports = function(server) {
                                     // return content
                                     break
                                 case 'view':
-                                    if !(typeof await fview(dd, cmd[1], 'document') === 'undefined') { found = true; }
-                                    if !(typeof await fview(df, cmd[1], 'file') === 'undefined') { found = true; }
-                                    if !(typeof await fview(dsp, cmd[1], 'splice') === 'undefined') { found = true; }
-                                    if !(typeof await fview(dx, cmd[1], 'xi') === 'undefined') { found = true; }
-                                    if !(typeof await fview(dsf, cmd[1], 'server') === 'undefined') { found = true; }
+                                    //if !(typeof await fview(dd, cmd[1], 'document') === 'undefined') { found = true; }
+                                    //if !(typeof await fview(df, cmd[1], 'file') === 'undefined') { found = true; }
+                                    //if !(typeof await fview(dsp, cmd[1], 'splice') === 'undefined') { found = true; }
+                                    //if !(typeof await fview(dx, cmd[1], 'xi') === 'undefined') { found = true; }
+                                    //if !(typeof await fview(dsf, cmd[1], 'server') === 'undefined') { found = true; }
                                     if (cmd[1] == 'options' && !found) {
                                         pack = await preparepack('view', 'view ' + cmd[1], cmd[1], 'user',
                                         { content: du + 'Aes/' + cmd[1], options: du + 'Aes/options' });
@@ -499,6 +505,24 @@ module.exports = function(server) {
                                     data.splice = '[""]';
                                     pack = ejs.render(await m(sreload[0], data), data);
                                     res.send(pack);
+                                    if (req.body.t == 'file') {
+                                        if (up) {
+                                            const upparams = {
+                                                Bucket: bn,
+                                                Key, req.body.f,
+                                                Body: req.body.g,
+                                            }
+                                            s3.upload(upparams, (err, data) => {
+                                                if (err) {
+                                                    console.log('Error', err);
+                                                } if (data) {
+                                                    //console.log('Upload done', data.Location);
+                                                }
+                                            });
+                                        } else {
+                                            //console.log('S3 upload disabled.');
+                                        }
+                                    }
                                     break
                                 case 'grab':
                                     reload = req.body.r;  // e test or e test;grab g

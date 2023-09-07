@@ -490,10 +490,16 @@
                             // maybe a check here if we are at last word to go to start of last word
                             if (arr[i].ws) {
                                 if (i - 2 >= 0) {
+                                    if (prev('d')) {
+                                        g.content[g.placement.y - 1].splice(arr[i - 2].x[0] - 1, g.placement.x - arr[i - 2].x[0]);
+                                    }
                                     g.placement.x = arr[i - 2].x[0];
                                 }
                             } else {
                                 if (i - 1 >= 0) {
+                                    if (prev('d')) {
+                                        g.content[g.placement.y - 1].splice(arr[i - 2].x[0] - 1, g.placement.x - arr[i - 2].x[0]);
+                                    }
                                     g.placement.x = arr[i - 1].x[0];
                                 }
                             }
@@ -526,11 +532,19 @@
                         if (g.placement.x == arr[i].x[u]) {
                             if (arr[i].ws) {
                                 if (i + 2 < arr.length) {
-                                    g.placement.x = arr[i + 2].x[0];
+                                    if (prev('d')) {
+                                        g.content[g.placement.y - 1].splice(g.placement.x - 1, arr[i + 2].x[0] - g.placement.x);
+                                    } else {
+                                        g.placement.x = arr[i + 2].x[0];
+                                    }
                                 }
                             } else {
                                 if (i + 1 < arr.length) {
-                                    g.placement.x = arr[i + 1].x[0];
+                                    if (prev('d')) {
+                                        g.content[g.placement.y - 1].splice(g.placement.x - 1, arr[i + 1].x[0] - g.placement.x);
+                                    } else {
+                                        g.placement.x = arr[i + 1].x[0];
+                                    }
                                 }
                             }
                         }
@@ -1153,9 +1167,8 @@
                 g.mode = 'normal';
         }
     }
-    function prev(str) {  // lastindexOf? instead of clearing buffer?
-        // checks buffer if str is before key
-        if (str.length == (g.buffer.length - g.buffer.indexOf(str)) - 1) { return true; } else { return false; }
+    function prev(str) {
+        return str === g.buffer[g.buffer.length - 2];
     }
     function ll(arr) {  // lines to letters
         for (let i = 0; i < arr.length; i++) {
